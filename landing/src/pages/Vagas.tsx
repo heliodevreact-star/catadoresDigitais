@@ -208,7 +208,7 @@ export function Vagas() {
                   </p>
 
                   <a
-                    href={`/${encodeURIComponent(track.pdf.normalize('NFD'))}`}
+                    href={`/${encodeURIComponent(track.pdf)}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-2 pt-4 border-t transition-opacity hover:opacity-80"
