@@ -129,7 +129,7 @@ export function Vagas() {
           >
             <HiOutlineSparkles className="w-4 h-4 text-[var(--c-accent-yellow)]" />
             <span className="font-dm text-sm font-medium text-[var(--c-accent-yellow)] tracking-wide">
-              Trabalhe conosco
+              Chamada para professoras e professores
             </span>
           </motion.div>
 
