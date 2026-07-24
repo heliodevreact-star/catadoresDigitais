@@ -99,7 +99,7 @@ export function Sponsors() {
               rel="noopener noreferrer"
             >
               <img
-                src="/Caixa_Fundo-Socio-Ambiental_Negativa_SB.png"
+                src="/fsc_negativa_chapada.png"
                 alt="Caixa Econômica Federal"
                 className="h-12 md:h-14 w-auto object-contain"
               />
