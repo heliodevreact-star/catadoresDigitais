@@ -3,7 +3,8 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { TECH_ICONS } from '@/lib/icons'
-import { HiPlus, HiArrowLeft, HiTrash } from 'react-icons/hi2'
+import { HiPlus, HiArrowLeft, HiTrash, HiArchiveBox, HiArchiveBoxXMark } from 'react-icons/hi2'
+import { Tooltip } from '@/components/Tooltip'
 import type { Turma } from '@/types'
 
 function fmt(iso: string) {
@@ -15,6 +16,7 @@ export default function TurmasPage() {
   const [loading, setLoading] = useState(true)
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null)
   const [deleting, setDeleting] = useState<string | null>(null)
+  const [archiving, setArchiving] = useState<string | null>(null)
 
   useEffect(() => {
     fetch('/api/admin/turmas')
@@ -30,19 +32,35 @@ export default function TurmasPage() {
     setConfirmDelete(null)
   }
 
+  async function handleToggleArchive(id: string, archived: boolean) {
+    setArchiving(id)
+    const res = await fetch(`/api/admin/turmas/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ archived: !archived }),
+    })
+    if (res.ok) {
+      setTurmas((prev) => prev.map((t) => t.id === id ? { ...t, archived: !archived } : t))
+    }
+    setArchiving(null)
+  }
+
   return (
     <main className="p-6 md:p-8">
       <div className="max-w-6xl mx-auto">
 
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
-            <Link
-              href="/dashboard/admin"
-              className="w-9 h-9 rounded-full flex items-center justify-center border transition-colors"
-              style={{ borderColor: 'var(--c-border-md)', color: 'var(--c-subtle)' }}
-            >
-              <HiArrowLeft className="w-4 h-4" />
-            </Link>
+            <Tooltip label="Voltar">
+              <Link
+                href="/dashboard/admin"
+                aria-label="Voltar"
+                className="w-9 h-9 rounded-full flex items-center justify-center border transition-colors"
+                style={{ borderColor: 'var(--c-border-md)', color: 'var(--c-subtle)' }}
+              >
+                <HiArrowLeft className="w-4 h-4" />
+              </Link>
+            </Tooltip>
             <h2 className="text-2xl font-bold" style={{ color: 'var(--c-text)' }}>Turmas</h2>
           </div>
           <Link
@@ -89,15 +107,25 @@ export default function TurmasPage() {
                     href={`/dashboard/turmas/${turma.id}`}
                     className="flex flex-col gap-4 p-6 flex-1"
                   >
-                    <div className="flex items-center gap-3 pr-6">
+                    <div className="flex items-center gap-3 pr-14">
                       <div
                         className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
-                        style={{ background: `${turma.iconColor}20` }}
+                        style={{ background: `${turma.iconColor}20`, opacity: turma.archived ? 0.5 : 1 }}
                       >
                         {Icon && <Icon className="w-6 h-6" style={{ color: turma.iconColor }} />}
                       </div>
                       <div className="min-w-0">
-                        <p className="font-semibold truncate" style={{ color: 'var(--c-text)' }}>{turma.name}</p>
+                        <div className="flex items-center gap-2">
+                          <p className="font-semibold truncate" style={{ color: 'var(--c-text)' }}>{turma.name}</p>
+                          {turma.archived && (
+                            <span
+                              className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full flex-shrink-0"
+                              style={{ background: 'var(--c-border-md)', color: 'var(--c-subtle)' }}
+                            >
+                              Arquivada
+                            </span>
+                          )}
+                        </div>
                         <p className="text-xs mt-0.5" style={{ color: 'var(--c-subtle)' }}>
                           {turma.students.length} aluno{turma.students.length !== 1 ? 's' : ''}
                         </p>
@@ -137,14 +165,29 @@ export default function TurmasPage() {
                       </button>
                     </div>
                   ) : (
-                    <button
-                      onClick={() => setConfirmDelete(turma.id)}
-                      className="absolute top-3 right-3 w-7 h-7 rounded-lg flex items-center justify-center border transition-colors"
-                      style={{ borderColor: 'var(--c-border-md)', color: 'var(--c-faint)', background: 'var(--c-bg-alt)' }}
-                      title="Deletar turma"
-                    >
-                      <HiTrash className="w-3.5 h-3.5" />
-                    </button>
+                    <div className="absolute top-3 right-3 flex items-center gap-1.5">
+                      <Tooltip label={turma.archived ? 'Desarquivar turma' : 'Arquivar turma'}>
+                        <button
+                          onClick={() => handleToggleArchive(turma.id, !!turma.archived)}
+                          disabled={archiving === turma.id}
+                          aria-label={turma.archived ? 'Desarquivar turma' : 'Arquivar turma'}
+                          className="w-7 h-7 rounded-lg flex items-center justify-center border transition-colors disabled:opacity-50"
+                          style={{ borderColor: 'var(--c-border-md)', color: 'var(--c-faint)', background: 'var(--c-bg-alt)' }}
+                        >
+                          {turma.archived ? <HiArchiveBoxXMark className="w-3.5 h-3.5" /> : <HiArchiveBox className="w-3.5 h-3.5" />}
+                        </button>
+                      </Tooltip>
+                      <Tooltip label="Deletar turma">
+                        <button
+                          onClick={() => setConfirmDelete(turma.id)}
+                          aria-label="Deletar turma"
+                          className="w-7 h-7 rounded-lg flex items-center justify-center border transition-colors"
+                          style={{ borderColor: 'var(--c-border-md)', color: 'var(--c-faint)', background: 'var(--c-bg-alt)' }}
+                        >
+                          <HiTrash className="w-3.5 h-3.5" />
+                        </button>
+                      </Tooltip>
+                    </div>
                   )}
                 </div>
               )

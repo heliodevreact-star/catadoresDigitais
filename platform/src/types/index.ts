@@ -14,6 +14,9 @@ export interface UserProfile {
   photoURL: string | null
   role: Role
   createdAt: string
+  phone?: string
+  cpf?: string
+  birthDate?: string // ISO date YYYY-MM-DD
 }
 
 export interface Nota {
@@ -41,6 +44,9 @@ export interface Turma {
   endDate: string    // ISO date YYYY-MM-DD
   students: string[] // emails
   professors?: TurmaTeacher[]
+  archived?: boolean
+  archivedAt?: string | null   // ISO datetime, or null when unarchived
+  archivedBy?: string | null   // admin uid, or 'system' when auto-archived
   createdBy: string
   createdAt: string
 }

@@ -4,7 +4,8 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { IconPicker } from '@/components/IconPicker'
-import { HiArrowLeft, HiXMark, HiPlus, HiTrash } from 'react-icons/hi2'
+import { Tooltip } from '@/components/Tooltip'
+import { HiArrowLeft, HiXMark, HiPlus, HiTrash, HiArchiveBox, HiArchiveBoxXMark } from 'react-icons/hi2'
 import type { Turma } from '@/types'
 import { inputStyle } from '@/lib/styles'
 
@@ -14,6 +15,7 @@ interface Props {
   mode: 'create' | 'edit'
   turmaId?: string
   initialData?: Partial<FormData>
+  archived?: boolean
   backHref: string
 }
 
@@ -27,7 +29,7 @@ function toInputDate(d: Date): string {
   return d.toISOString().split('T')[0]
 }
 
-export function TurmaForm({ mode, turmaId, initialData, backHref }: Props) {
+export function TurmaForm({ mode, turmaId, initialData, archived: initialArchived, backHref }: Props) {
   const router = useRouter()
 
   const [name, setName] = useState(initialData?.name ?? '')
@@ -41,6 +43,20 @@ export function TurmaForm({ mode, turmaId, initialData, backHref }: Props) {
   const [saving, setSaving] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [deleting, setDeleting] = useState(false)
+  const [archived, setArchived] = useState(initialArchived ?? false)
+  const [archiving, setArchiving] = useState(false)
+
+  async function toggleArchived() {
+    setArchiving(true)
+    const nextArchived = !archived
+    const res = await fetch(`/api/admin/turmas/${turmaId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ archived: nextArchived }),
+    })
+    if (res.ok) setArchived(nextArchived)
+    setArchiving(false)
+  }
 
   const maxEndDate = startDate ? toInputDate(addMonths(new Date(startDate), 12)) : undefined
   const isEdit = mode === 'edit'
@@ -103,14 +119,25 @@ export function TurmaForm({ mode, turmaId, initialData, backHref }: Props) {
       <div className="max-w-2xl mx-auto">
         <header className="flex items-center justify-between mb-10">
           <div className="flex items-center gap-3">
-            <Link
-              href={backHref}
-              className="w-9 h-9 rounded-full flex items-center justify-center border"
-              style={{ borderColor: 'var(--c-border-md)', color: 'var(--c-subtle)' }}
-            >
-              <HiArrowLeft className="w-4 h-4" />
-            </Link>
+            <Tooltip label="Voltar">
+              <Link
+                href={backHref}
+                aria-label="Voltar"
+                className="w-9 h-9 rounded-full flex items-center justify-center border"
+                style={{ borderColor: 'var(--c-border-md)', color: 'var(--c-subtle)' }}
+              >
+                <HiArrowLeft className="w-4 h-4" />
+              </Link>
+            </Tooltip>
             <h1 className="text-3xl font-bold" style={{ color: 'var(--c-text)' }}>{title}</h1>
+            {isEdit && archived && (
+              <span
+                className="text-xs font-semibold px-2.5 py-1 rounded-full flex-shrink-0"
+                style={{ background: 'var(--c-border-md)', color: 'var(--c-subtle)' }}
+              >
+                Arquivada
+              </span>
+            )}
           </div>
         </header>
 
@@ -197,9 +224,11 @@ export function TurmaForm({ mode, turmaId, initialData, backHref }: Props) {
                 {students.map((email) => (
                   <li key={email} className="flex items-center justify-between px-3 py-2 rounded-xl" style={{ background: 'var(--c-bg)', color: 'var(--c-muted)' }}>
                     <span className="text-sm">{email}</span>
-                    <button type="button" onClick={() => removeStudent(email)} style={{ color: 'var(--c-faint)' }}>
-                      <HiXMark className="w-4 h-4" />
-                    </button>
+                    <Tooltip label="Remover aluno">
+                      <button type="button" onClick={() => removeStudent(email)} aria-label="Remover aluno" style={{ color: 'var(--c-faint)' }}>
+                        <HiXMark className="w-4 h-4" />
+                      </button>
+                    </Tooltip>
                   </li>
                 ))}
               </ul>
@@ -216,6 +245,31 @@ export function TurmaForm({ mode, turmaId, initialData, backHref }: Props) {
           >
             {submitLabel}
           </button>
+
+          {isEdit && (
+            <div className={card} style={cardStyle}>
+              <div>
+                <label className="text-sm font-medium" style={{ color: 'var(--c-text)' }}>
+                  {archived ? 'Turma arquivada' : 'Arquivamento'}
+                </label>
+                <p className="text-xs mt-0.5" style={{ color: 'var(--c-subtle)' }}>
+                  {archived
+                    ? 'Os dados foram preservados, mas professores e alunos não podem mais editar aulas, chamada ou banco de aulas. Ela também não aparece na Lista de acesso. Desarquive para liberar edição novamente.'
+                    : 'Turmas arquivadas somem da Lista de acesso e ficam somente-leitura para professores e alunos — os dados continuam preservados e só um admin pode alterá-los.'}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={toggleArchived}
+                disabled={archiving}
+                className="flex items-center gap-2 self-start text-sm px-4 py-2 rounded-xl border transition-colors disabled:opacity-50"
+                style={{ borderColor: 'var(--c-border-md)', color: 'var(--c-muted)' }}
+              >
+                {archived ? <HiArchiveBoxXMark className="w-4 h-4" /> : <HiArchiveBox className="w-4 h-4" />}
+                {archiving ? 'Aguarde...' : archived ? 'Desarquivar turma' : 'Arquivar turma'}
+              </button>
+            </div>
+          )}
 
           {isEdit && (
             <div

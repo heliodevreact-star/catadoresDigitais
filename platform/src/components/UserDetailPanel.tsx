@@ -6,9 +6,16 @@ import { HiXMark, HiTrash, HiPencil, HiCheck } from 'react-icons/hi2'
 import type { UserProfile, Turma } from '@/types'
 
 import { ROLE_LABEL, ROLE_COLORS, ROLE_BG_COLORS } from '@/lib/constants'
+import { Tooltip } from './Tooltip'
+import { formatCPF, formatPhone } from '@/lib/utils'
+import { parseLocalDate } from '@/lib/date-utils'
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })
+}
+
+function formatBirthDate(iso: string) {
+  return parseLocalDate(iso).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })
 }
 
 interface Props {
@@ -112,13 +119,16 @@ export function UserDetailPanel({ user, turmas, turmasLoading, onClose, onRoleUp
           style={{ background: 'var(--c-bg-alt)', borderColor: 'var(--c-border)' }}
         >
           <h2 className="font-semibold" style={{ color: 'var(--c-text)' }}>Perfil do usuário</h2>
-          <button
-            onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-lg transition-opacity hover:opacity-60"
-            style={{ color: 'var(--c-subtle)' }}
-          >
-            <HiXMark className="w-5 h-5" />
-          </button>
+          <Tooltip label="Fechar">
+            <button
+              onClick={onClose}
+              aria-label="Fechar"
+              className="w-8 h-8 flex items-center justify-center rounded-lg transition-opacity hover:opacity-60"
+              style={{ color: 'var(--c-subtle)' }}
+            >
+              <HiXMark className="w-5 h-5" />
+            </button>
+          </Tooltip>
         </div>
 
         <div className="flex flex-col gap-5 p-6">
@@ -146,31 +156,39 @@ export function UserDetailPanel({ user, turmas, turmasLoading, onClose, onRoleUp
                     style={{ background: 'var(--c-bg)', borderColor: 'var(--c-border-md)', color: 'var(--c-text)' }}
                     disabled={savingName}
                   />
-                  <button
-                    onClick={handleSaveName}
-                    disabled={savingName || !nameInput.trim()}
-                    className="w-7 h-7 flex items-center justify-center rounded-lg transition-opacity disabled:opacity-40"
-                    style={{ background: 'var(--c-success)', color: '#fff' }}
-                  >
-                    <HiCheck className="w-3.5 h-3.5" />
-                  </button>
-                  <button
-                    onClick={() => setEditingName(false)}
-                    className="w-7 h-7 flex items-center justify-center rounded-lg transition-opacity hover:opacity-60"
-                    style={{ color: 'var(--c-faint)' }}
-                  >
-                    <HiXMark className="w-3.5 h-3.5" />
-                  </button>
+                  <Tooltip label="Salvar">
+                    <button
+                      onClick={handleSaveName}
+                      disabled={savingName || !nameInput.trim()}
+                      aria-label="Salvar"
+                      className="w-7 h-7 flex items-center justify-center rounded-lg transition-opacity disabled:opacity-40"
+                      style={{ background: 'var(--c-success)', color: '#fff' }}
+                    >
+                      <HiCheck className="w-3.5 h-3.5" />
+                    </button>
+                  </Tooltip>
+                  <Tooltip label="Cancelar">
+                    <button
+                      onClick={() => setEditingName(false)}
+                      aria-label="Cancelar"
+                      className="w-7 h-7 flex items-center justify-center rounded-lg transition-opacity hover:opacity-60"
+                      style={{ color: 'var(--c-faint)' }}
+                    >
+                      <HiXMark className="w-3.5 h-3.5" />
+                    </button>
+                  </Tooltip>
                 </div>
               ) : (
-                <button
-                  onClick={startEditingName}
-                  className="flex items-center gap-1.5 group max-w-full"
-                  title="Editar nome"
-                >
-                  <p className="font-semibold truncate" style={{ color: 'var(--c-text)' }}>{user.name}</p>
-                  <HiPencil className="w-3.5 h-3.5 flex-shrink-0 opacity-0 group-hover:opacity-60 transition-opacity" style={{ color: 'var(--c-subtle)' }} />
-                </button>
+                <Tooltip label="Editar nome">
+                  <button
+                    onClick={startEditingName}
+                    aria-label="Editar nome"
+                    className="flex items-center gap-1.5 group max-w-full"
+                  >
+                    <p className="font-semibold truncate" style={{ color: 'var(--c-text)' }}>{user.name}</p>
+                    <HiPencil className="w-3.5 h-3.5 flex-shrink-0 opacity-0 group-hover:opacity-60 transition-opacity" style={{ color: 'var(--c-subtle)' }} />
+                  </button>
+                </Tooltip>
               )}
               <p className="text-sm truncate mt-0.5" style={{ color: 'var(--c-subtle)' }}>{user.email}</p>
               <span
@@ -188,6 +206,33 @@ export function UserDetailPanel({ user, turmas, turmasLoading, onClose, onRoleUp
               Membro desde
             </p>
             <p className="text-sm" style={{ color: 'var(--c-text)' }}>{formatDate(user.createdAt)}</p>
+          </div>
+
+          {/* Contact info */}
+          <div className="rounded-xl p-4 flex flex-col gap-3" style={{ background: 'var(--c-bg)', border: '1px solid var(--c-border)' }}>
+            <p className="text-xs uppercase tracking-wide font-semibold" style={{ color: 'var(--c-faint)' }}>
+              Dados pessoais
+            </p>
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-xs" style={{ color: 'var(--c-subtle)' }}>Telefone</span>
+                <span className="text-sm" style={{ color: user.phone ? 'var(--c-text)' : 'var(--c-faint)' }}>
+                  {user.phone ? formatPhone(user.phone) : 'Não informado'}
+                </span>
+              </div>
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-xs" style={{ color: 'var(--c-subtle)' }}>CPF</span>
+                <span className="text-sm" style={{ color: user.cpf ? 'var(--c-text)' : 'var(--c-faint)' }}>
+                  {user.cpf ? formatCPF(user.cpf) : 'Não informado'}
+                </span>
+              </div>
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-xs" style={{ color: 'var(--c-subtle)' }}>Data de nascimento</span>
+                <span className="text-sm" style={{ color: user.birthDate ? 'var(--c-text)' : 'var(--c-faint)' }}>
+                  {user.birthDate ? formatBirthDate(user.birthDate) : 'Não informado'}
+                </span>
+              </div>
+            </div>
           </div>
 
           {/* Role selector */}
@@ -238,19 +283,21 @@ export function UserDetailPanel({ user, turmas, turmasLoading, onClose, onRoleUp
                       >
                         <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: turma.iconColor }} />
                         <span className="text-sm flex-1 truncate" style={{ color: 'var(--c-text)' }}>{turma.name}</span>
-                        <button
-                          onClick={() => handleRemoveFromTurma(turma.id)}
-                          disabled={removingTurmaId === turma.id}
-                          title={isTeacher ? 'Remover da turma' : 'Remover matrícula'}
-                          className="w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 transition-opacity hover:opacity-70 disabled:opacity-40"
-                          style={{ color: 'var(--c-faint)' }}
-                        >
-                          {removingTurmaId === turma.id ? (
-                            <span className="text-[10px]">...</span>
-                          ) : (
-                            <HiXMark className="w-3.5 h-3.5" />
-                          )}
-                        </button>
+                        <Tooltip label={isTeacher ? 'Remover da turma' : 'Remover matrícula'}>
+                          <button
+                            onClick={() => handleRemoveFromTurma(turma.id)}
+                            disabled={removingTurmaId === turma.id}
+                            aria-label={isTeacher ? 'Remover da turma' : 'Remover matrícula'}
+                            className="w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 transition-opacity hover:opacity-70 disabled:opacity-40"
+                            style={{ color: 'var(--c-faint)' }}
+                          >
+                            {removingTurmaId === turma.id ? (
+                              <span className="text-[10px]">...</span>
+                            ) : (
+                              <HiXMark className="w-3.5 h-3.5" />
+                            )}
+                          </button>
+                        </Tooltip>
                       </li>
                     ))}
                   </ul>
