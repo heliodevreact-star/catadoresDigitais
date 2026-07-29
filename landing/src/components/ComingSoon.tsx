@@ -2,7 +2,11 @@ import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { useRef, useState } from 'react';
 import { HiOutlineMapPin, HiOutlineUserGroup, HiOutlineCalendar, HiCheckCircle } from 'react-icons/hi2';
 import { HiSparkles } from 'react-icons/hi';
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { useTheme } from '../context/ThemeContext';
+import { db } from '../lib/firebase';
+
+const EMAIL_REGEX = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
 const priorities = [
   {
@@ -32,13 +36,40 @@ export function ComingSoon() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
   const { isDark } = useTheme();
-  const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
+  const [honeypot, setHoneypot] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!phone.trim()) return;
-    setSubmitted(true);
+    const trimmed = email.trim().toLowerCase();
+    if (!EMAIL_REGEX.test(trimmed)) {
+      setError('Digite um email válido.');
+      return;
+    }
+
+    // Campo isca: bots costumam preencher todos os campos, humanos não veem este.
+    if (honeypot) {
+      setSubmitted(true);
+      return;
+    }
+
+    setError(null);
+    setSubmitting(true);
+    try {
+      await addDoc(collection(db, 'leads'), {
+        email: trimmed,
+        source: 'landing',
+        createdAt: serverTimestamp(),
+      });
+      setSubmitted(true);
+    } catch {
+      setError('Não foi possível enviar agora. Tente novamente em instantes.');
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -169,21 +200,34 @@ export function ComingSoon() {
                   className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
                 >
                   <input
-                    type="tel"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="Seu WhatsApp com DDD"
+                    type="text"
+                    name="company"
+                    value={honeypot}
+                    onChange={(e) => setHoneypot(e.target.value)}
+                    tabIndex={-1}
+                    autoComplete="off"
+                    aria-hidden="true"
+                    className="absolute w-px h-px opacity-0 pointer-events-none -z-10"
+                  />
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Seu melhor email"
                     className="flex-1 bg-[var(--c-input-bg)] border border-[var(--c-border)] text-[var(--c-text)] placeholder-[var(--c-subtle)] font-dm text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-brand-yellow/50 transition-colors"
                   />
                   <button
                     type="submit"
                     className="font-syne font-bold text-dark-950 px-6 py-3 rounded-xl whitespace-nowrap transition-opacity hover:opacity-90 disabled:opacity-50"
                     style={{ background: 'linear-gradient(135deg, #FFC530, #FF6B35)' }}
-                    disabled={!phone.trim()}
+                    disabled={!email.trim() || submitting}
                   >
-                    Avisar quando abrir
+                    {submitting ? 'Enviando...' : 'Avisar quando abrir'}
                   </button>
                 </form>
+                {error && (
+                  <p className="font-dm text-xs mt-3" style={{ color: '#FF6B35' }}>{error}</p>
+                )}
                 <p className="font-dm text-xs text-[var(--c-subtle)] mt-4">
                   Seus dados não serão compartilhados. Apenas um aviso quando as inscrições abrirem.
                 </p>
