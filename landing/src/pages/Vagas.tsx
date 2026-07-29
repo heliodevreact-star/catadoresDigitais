@@ -89,7 +89,7 @@ const APPLICATION_EMAIL = 'ipes.instituto@gmail.com';
 const mailtoHref = `mailto:${APPLICATION_EMAIL}?subject=${encodeURIComponent(
   'Candidatura para professor(a) — Catadores Digitais'
 )}&body=${encodeURIComponent(
-  'Olá! Tenho interesse em ser professor(a) voluntário(a) no Catadores Digitais.\n\nNome:\nTrilha de interesse (Games / Desenvolvimento Web / Marketing Digital):\nUm resumo da minha experiência na área:\nDisponibilidade de horários:\n'
+  'Olá! Tenho interesse em ser professor(a) no Catadores Digitais.\n\nNome:\nTrilha de interesse (Games / Desenvolvimento Web / Marketing Digital):\nUm resumo da minha experiência na área:\nDisponibilidade de horários:\nValor de hora/aula:\n\n(Segue currículo em anexo)'
 )}`;
 
 export function Vagas() {
@@ -149,9 +149,9 @@ export function Vagas() {
             transition={{ duration: 0.6, delay: 0.25 }}
             className="font-dm text-lg md:text-xl text-[var(--c-muted)] max-w-2xl mx-auto leading-relaxed"
           >
-            Estamos em busca de professoras e professores para as três trilhas do Catadores
-            Digitais. Se você domina games, desenvolvimento web ou marketing digital e quer
-            usar esse conhecimento para abrir portas, essa vaga é para você.
+            Estamos em busca de professoras e professores remunerados para as três trilhas
+            do Catadores Digitais. Se você domina games, desenvolvimento web ou marketing
+            digital e quer usar esse conhecimento para abrir portas, essa vaga é para você.
           </motion.p>
         </div>
       </section>
@@ -308,8 +308,8 @@ export function Vagas() {
               Quer fazer parte?
             </h3>
             <p className="font-dm text-[var(--c-muted)] max-w-md mx-auto mb-7 leading-relaxed">
-              Mande um e-mail contando sua experiência e a trilha de interesse.
-              Nossa equipe entra em contato para os próximos passos.
+              As aulas são remuneradas. Mande seu currículo, a trilha de interesse
+              e o seu valor de hora/aula. Nossa equipe entra em contato para os próximos passos.
             </p>
 
             <a
