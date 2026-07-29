@@ -12,6 +12,15 @@ service cloud.firestore {
       allow read: if request.auth != null;
       allow write: if false; // writes via Admin SDK only
     }
+    match /leads/{leadId} {
+      // Público pode criar (form da landing), mas nunca ler, editar ou apagar.
+      allow create: if request.resource.data.keys().hasOnly(['email', 'source', 'createdAt'])
+                    && request.resource.data.email is string
+                    && request.resource.data.email.matches('^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$')
+                    && request.resource.data.source is string
+                    && request.resource.data.createdAt == request.time;
+      allow read, update, delete: if false; // leitura via Admin SDK only
+    }
     match /turmas/{turmaId} {
       allow read: if request.auth != null;
       allow write: if false; // writes via Admin SDK only

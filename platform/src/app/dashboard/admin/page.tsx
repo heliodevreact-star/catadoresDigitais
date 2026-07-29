@@ -8,7 +8,7 @@ import { useAdminAllowlist } from '@/hooks/useAdminAllowlist'
 import { useAdminTurmas } from '@/hooks/useAdminTurmas'
 import { useQueryClient } from '@tanstack/react-query'
 import { AnimatePresence } from 'framer-motion'
-import { HiAcademicCap, HiChevronRight, HiCalendarDays, HiClock, HiTrash, HiShieldCheck, HiPlus } from 'react-icons/hi2'
+import { HiAcademicCap, HiChevronRight, HiCalendarDays, HiClock, HiTrash, HiShieldCheck, HiPlus, HiEnvelope } from 'react-icons/hi2'
 import Link from 'next/link'
 import type { UserProfile, Turma } from '@/types'
 import type { UpcomingAula } from '@/app/api/admin/upcoming-aulas/route'
@@ -303,6 +303,23 @@ export default function AdminDashboard() {
               <div>
                 <p className="font-semibold text-sm" style={{ color: 'var(--c-text)' }}>Turmas</p>
                 <p className="text-xs" style={{ color: 'var(--c-subtle)' }}>Criar e gerenciar turmas</p>
+              </div>
+            </div>
+            <HiChevronRight className="w-4 h-4" style={{ color: 'var(--c-faint)' }} />
+          </Link>
+
+          <Link
+            href="/dashboard/admin/leads"
+            className="rounded-2xl border p-5 flex items-center justify-between transition-opacity hover:opacity-75"
+            style={{ background: 'var(--c-bg-alt)', borderColor: 'var(--c-border)' }}
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'var(--c-gold-soft)' }}>
+                <HiEnvelope className="w-5 h-5" style={{ color: 'var(--c-gold)' }} />
+              </div>
+              <div>
+                <p className="font-semibold text-sm" style={{ color: 'var(--c-text)' }}>Interessados</p>
+                <p className="text-xs" style={{ color: 'var(--c-subtle)' }}>Emails cadastrados na landing</p>
               </div>
             </div>
             <HiChevronRight className="w-4 h-4" style={{ color: 'var(--c-faint)' }} />

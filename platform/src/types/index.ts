@@ -7,6 +7,13 @@ export interface AllowlistEntry {
   createdAt: string
 }
 
+export interface Lead {
+  id: string
+  email: string
+  source: string
+  createdAt: string | null
+}
+
 export interface UserProfile {
   uid: string
   email: string
