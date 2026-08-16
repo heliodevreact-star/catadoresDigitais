@@ -24,11 +24,17 @@ Plataforma de gestão de turmas e aulas para o programa de formações gratuitas
 
 ```env
 NEXT_PUBLIC_ADMIN_EMAIL=          # email do admin hardcoded
-NEXT_PUBLIC_OPEN_SIGNUP=true      # true = qualquer Google login aceito (dev); false = usa allowlist
-NEXT_PUBLIC_FIREBASE_*            # config do Firebase client
-FIREBASE_ADMIN_*                  # credenciais do Firebase Admin SDK
+NEXT_PUBLIC_OPEN_SIGNUP=true      # true = qualquer Google login aceito (dev); false = usa allowlist — em produção deve ser false
+NEXT_PUBLIC_FIREBASE_*            # config do Firebase client SDK (públicas por design)
+FIREBASE_PROJECT_ID=              # credenciais do Firebase Admin SDK (server-only)
+FIREBASE_CLIENT_EMAIL=            # idem — email da service account
+FIREBASE_PRIVATE_KEY=             # idem — chave privada, nunca expor no client (\n literais na string)
 CRON_SECRET=                      # protege /api/cron/archive-turmas (header Authorization: Bearer <valor>)
+NEXT_PUBLIC_LANDING_URL=          # URL da /landing, usada no link "voltar" da navbar do dashboard
+NEXT_PUBLIC_SITE_URL=             # opcional — origem fixa usada no QR code dos diplomas (ver seção Diplomas). Sem isso, usa o host da própria requisição
 ```
+
+> Todas essas variáveis vivem só em `.env.local` (gitignored) — em produção (Vercel) precisam ser cadastradas manualmente em Project Settings → Environment Variables, e um deploy novo precisa ser disparado depois de adicioná-las (deploys já feitos não pegam variáveis novas retroativamente).
 
 ## Controle de acesso
 
@@ -51,6 +57,21 @@ turmas/{id}
   archived?: boolean
   archivedAt?: string | null   // ISO datetime, ou null quando desarquivada
   archivedBy?: string | null   // uid do admin, ou 'system' quando auto-arquivada
+  coordinatorName?: string
+  coordinatorSignature?: string   // data URI PNG base64, direto no doc (ver seção Diplomas)
+
+turmas/{id}/diplomas/{id}        // marco/template de diploma
+  title, description?, achievedDate, hours: number
+  recipientEmails: string[]      // alunos selecionados manualmente
+  issuedEmails: string[]         // subset já emitido (dedupe)
+  createdBy, createdAt
+
+diplomasEmitidos/{id}            // top-level, NÃO subcoleção — diploma emitido, imutável
+  turmaId, turmaName, milestoneId
+  title, description?, achievedDate, hours: number
+  studentEmail, studentName, studentCpf
+  coordinatorName, coordinatorSignature   // snapshot do momento da emissão
+  issuedBy, issuedAt
 
 turmas/{id}/aulas/{id}
   title, description, date, startTime, endTime
@@ -85,18 +106,27 @@ users/{uid}/notas/{id}
 | `/api/admin/turmas/[id]/relatorio` | GET | admin | Relatório de presença e conclusão por turma (`?from=&to=` opcional) |
 | `/api/student/turmas` | GET | any | Turmas do aluno logado |
 | `/api/student/upcoming-aulas` | GET | any | Aulas da semana atual + futuras |
-| `/api/turmas/[id]/students` | GET | editor | Retorna `{ email, name }[]` dos alunos da turma |
+| `/api/turmas/[id]/students` | GET | editor | Retorna `{ email, name, cpf }[]` dos alunos da turma |
+| `/api/admin/leads` | GET | admin | Lista interessados capturados no formulário da landing |
+| `/api/admin/leads/[id]` | DELETE | admin | Remove um lead |
 | `/api/turmas/[id]/aulas` | GET, POST | any/editor | Lista e cria aulas |
 | `/api/turmas/[id]/aulas/[aulaId]` | PATCH, DELETE | editor | Edita ou remove aula |
 | `/api/turmas/[id]/aulas/[aulaId]/chamada` | POST | any | Aluno responde chamada com código |
 | `/api/turmas/[id]/aulas/[aulaId]/respostas` | GET | any | Editor recebe todas as respostas; aluno recebe só a sua (ou `null`) |
 | `/api/turmas/[id]/aulas/[aulaId]/respostas` | POST | any | Aluno envia respostas da avaliação (salva em `respostas/{email}`) |
+| `/api/turmas/[id]/diplomas` | GET, POST | any/editor | Lista e cria marcos de diploma |
+| `/api/turmas/[id]/diplomas/[milestoneId]` | PATCH, DELETE | editor/admin | Edita marco (qualquer campo, inclusive `hours`) ou apaga (admin — não afeta diplomas já emitidos) |
+| `/api/turmas/[id]/diplomas/[milestoneId]/issue` | POST | editor | Emite diplomas pros alunos informados (`{recipients: [{email, cpf}]}`), dedupe por `issuedEmails` |
+| `/api/turmas/[id]/diplomas/mine` | GET | any | Diplomas do próprio usuário logado nessa turma — `{earned, pending}` |
+| `/api/diplomas/[id]/pdf` | GET | **público** | Gera e devolve o PDF do diploma sob demanda — URL de capacidade (ID aleatório do Firestore), sem checar sessão |
 | `/api/cron/archive-turmas` | GET | `CRON_SECRET` (header `Authorization: Bearer`) | Varre todas as turmas e arquiva as expiradas (Vercel Cron, diário) |
 
 ## Permissões do aluno
 
 - Tab **Presenças** oculta
 - Tab **Banco de Aulas** oculta
+- Tab **Diplomas** oculta (gestão de marcos/emissão é `canEdit`-only)
+- Tab **Conquistas** visível **apenas para alunos** — mesmo gate que Anotações, invertido
 - Tab **Anotações** visível **apenas para alunos** (editores não veem)
 - **Materiais** de aulas futuras bloqueados até 7 dias antes da data
 - Aba **Professores**: somente nome e email visíveis (telefone oculto)
@@ -123,6 +153,16 @@ match /users/{uid} {
 ```
 
 ## Padrões importantes
+
+### Diplomas — geração de PDF e verificação pública
+
+- **`@react-pdf/renderer`** (não Puppeteer/headless browser, não `pdf-lib`) — renderiza um componente React pra PDF puramente em JS, sem binário externo. Puppeteer exigiria empacotar Chromium na função serverless da Vercel (cold start pesado, mais manutenção) por um layout fixo que não precisa disso. Layout do diploma fica em `src/lib/diploma-pdf.tsx`.
+- **Logos precisam ser PNG ou JPEG** — o decodificador de imagem do react-pdf (`@react-pdf/image`) só suporta esses dois formatos, sem webp. `public/ipes-logo.png` é uma conversão de `ipes-logo.webp` (feita uma vez com `sharp`, já uma dependência transitiva do react-pdf).
+- **Assinatura do coordenador: PNG com transparência preservada, nunca achatar pra JPEG.** A primeira versão convertia a imagem enviada pro canvas → `toDataURL('image/jpeg', quality)` com um `fillRect` branco atrás, pra "resolver" a transparência. Resultado: um halo cinza claro ao redor do traço — artefato de compressão em blocos do JPEG perto de bordas de alto contraste (traço escuro sobre fundo claro). Fix em `src/lib/image-resize.ts`: `canvas.toDataURL('image/png')`, sem `fillRect` nenhum — a transparência é resolvida no render do PDF (fundo branco da página aparece através), não no upload.
+- **`diplomasEmitidos` é imutável por design** — cada diploma emitido é um snapshot (nome do aluno, CPF, nome/assinatura do coordenador, tudo copiado no momento da emissão), não uma referência viva pra `turmas/{id}` ou pro `users/{uid}`. Editar o coordenador da turma depois não altera diplomas já emitidos — é assim que um certificado deveria se comportar.
+- **Sem regra pública no Firestore para `diplomasEmitidos`** — ao contrário do `leads` da landing (que precisa de `allow create` público porque é uma SPA Vite escrevendo direto do client), a página `/diploma/[id]` e a rota `/api/diplomas/[id]/pdf` são Server Component / Route Handler do Next rodando com `adminDb` (Admin SDK, ignora Firestore Rules). `diplomasEmitidos` fica `allow read, write: if false`, igual `turmas`/`aulas` — o "acesso público" acontece inteiramente no servidor, nunca no client.
+- **QR code aponta pra `{origin}/diploma/{id}`**, gerado a cada download (não cacheado). `origin` vem de `NEXT_PUBLIC_SITE_URL` se a env var estiver setada, senão do host da própria requisição (`src/lib/diploma-qr.ts`). Isso importa porque um PDF já baixado tem a URL gravada pra sempre — setar essa variável quando o domínio final estiver pronto só afeta PDFs gerados **depois** disso.
+- **`hours` é obrigatório em marcos novos**, mas marcos criados antes desse campo existir na `Turma`/`DiplomaMilestone` ficam sem ele — não há migração automática. A aba Diplomas tem um botão "Editar" no card do marco pra preencher isso manualmente; diplomas já emitidos antes do campo existir não podem ser corrigidos (são imutáveis), só reemitidos como um novo registro se necessário.
 
 ### Firestore — inequality filters
 Nunca combinar dois filtros de desigualdade em campos diferentes na mesma query. Firestore só permite inequality (`>=`, `!=`, etc.) em um único campo por query. Filtros adicionais devem ser feitos em JavaScript após o `.get()`:
@@ -279,6 +319,9 @@ Cada endpoint tem seu próprio hook e sua própria **query key** — um array qu
 ['admin', 'allowlist']           → /api/admin/allowlist
 ['admin', 'turmas']              → /api/admin/turmas
 ['admin', 'users']               → /api/admin/users
+['admin', 'leads']               → /api/admin/leads
+['turmas', turmaId, 'diplomas']                      → /api/turmas/[id]/diplomas
+['turmas', turmaId, 'diplomas', milestoneId, 'issued'] → /api/turmas/[id]/diplomas/[milestoneId]/issued
 ```
 
 Usar arrays hierárquicos (`['admin', 'turmas']`) permite invalidar grupos inteiros se necessário:
