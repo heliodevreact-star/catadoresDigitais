@@ -56,6 +56,36 @@ export interface Turma {
   archivedBy?: string | null   // admin uid, or 'system' when auto-archived
   createdBy: string
   createdAt: string
+  coordinatorName?: string
+  coordinatorSignature?: string // base64 data URI (image), resized client-side
+}
+
+export interface DiplomaMilestone {
+  id: string
+  title: string
+  description?: string
+  achievedDate: string        // ISO date YYYY-MM-DD
+  recipientEmails: string[]   // manually selected students
+  issuedEmails: string[]      // subset already issued (dedupe + status)
+  createdBy: string
+  createdAt: string
+}
+
+export interface DiplomaEmitido {
+  id: string
+  turmaId: string
+  turmaName: string
+  milestoneId: string
+  title: string
+  description?: string
+  achievedDate: string
+  studentEmail: string
+  studentName: string
+  studentCpf: string
+  coordinatorName: string
+  coordinatorSignature: string
+  issuedBy: string
+  issuedAt: string
 }
 
 export interface DriveLink {

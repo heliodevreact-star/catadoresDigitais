@@ -7,7 +7,7 @@ import {
   HiDocumentText, HiVideoCamera, HiArrowTopRightOnSquare,
   HiPlus, HiXMark, HiTrash, HiPencilSquare, HiListBullet,
   HiClipboardDocumentCheck, HiCheckCircle, HiUserGroup, HiEnvelope, HiPhone,
-  HiPresentationChartBar, HiUsers, HiAcademicCap, HiCalendarDays,
+  HiPresentationChartBar, HiUsers, HiAcademicCap, HiCalendarDays, HiCheckBadge,
   HiLightBulb, HiClock, HiArrowTrendingUp, HiArrowTrendingDown,
   HiEye, HiEyeSlash, HiChevronDown, HiChevronUp, HiChevronRight, HiArrowPath, HiBars3BottomLeft,
 } from 'react-icons/hi2'
@@ -25,6 +25,7 @@ import { BancoPanel } from './BancoPanel'
 import { AulaModal } from './AulaModal'
 import { ChamadaEditModal } from './ChamadaEditModal'
 import { AnotacoesPanel } from './AnotacoesPanel'
+import { DiplomasPanel } from './DiplomasPanel'
 
 const MONTHS_PT = [
   'Janeiro','Fevereiro','Março','Abril','Maio','Junho',
@@ -62,7 +63,7 @@ interface AddState {
   saving: boolean
 }
 
-type Tab = 'estatisticas' | 'conteudo' | 'presencas' | 'professores' | 'banco' | 'anotacoes'
+type Tab = 'estatisticas' | 'conteudo' | 'presencas' | 'professores' | 'banco' | 'diplomas' | 'anotacoes'
 
 const TAB_CONFIG: Record<Tab, { Icon: IconType; label: string }> = {
   estatisticas: { Icon: HiPresentationChartBar, label: 'Visão geral' },
@@ -70,6 +71,7 @@ const TAB_CONFIG: Record<Tab, { Icon: IconType; label: string }> = {
   presencas:    { Icon: HiClipboardDocumentCheck, label: 'Presenças' },
   professores:  { Icon: HiUserGroup,             label: 'Professores' },
   banco:        { Icon: HiListBullet,            label: 'Banco de Aulas' },
+  diplomas:     { Icon: HiCheckBadge,            label: 'Diplomas' },
   anotacoes:    { Icon: HiPencilSquare,          label: 'Anotações' },
 }
 
@@ -77,7 +79,7 @@ export function ConteudoPanel({ turma, aulas, selectedMonth, canEdit, currentUse
   const [adding, setAdding] = useState<AddState | null>(null)
   const [creatingAula, setCreatingAula] = useState(false)
 
-  const validTabs: Tab[] = ['estatisticas', 'conteudo', 'presencas', 'professores', 'banco', 'anotacoes']
+  const validTabs: Tab[] = ['estatisticas', 'conteudo', 'presencas', 'professores', 'banco', 'diplomas', 'anotacoes']
   const defaultTab: Tab = canEdit ? 'estatisticas' : 'conteudo'
   const [tab, setTab] = useState<Tab>(
     initialTab && validTabs.includes(initialTab as Tab) ? (initialTab as Tab) : defaultTab
@@ -144,11 +146,12 @@ export function ConteudoPanel({ turma, aulas, selectedMonth, canEdit, currentUse
             className="flex mt-2"
             style={isMobile ? undefined : { gap: 2, overflowX: 'auto', overflowY: 'hidden' }}
           >
-            {((['estatisticas', 'conteudo', 'presencas', 'professores', 'banco', 'anotacoes'] as Tab[]).filter(
+            {((['estatisticas', 'conteudo', 'presencas', 'professores', 'banco', 'diplomas', 'anotacoes'] as Tab[]).filter(
               (t) =>
                 (t !== 'estatisticas' || canEdit) &&
                 (t !== 'presencas' || canEdit) &&
                 (t !== 'banco' || canEdit) &&
+                (t !== 'diplomas' || canEdit) &&
                 (t !== 'anotacoes' || !canEdit)
             )).map((t) => {
               const active = tab === t
@@ -342,6 +345,15 @@ export function ConteudoPanel({ turma, aulas, selectedMonth, canEdit, currentUse
           aulas={aulas}
           currentUser={currentUser}
           onRefreshAulas={onRefresh}
+        />
+      )}
+
+      {/* Diplomas tab */}
+      {tab === 'diplomas' && (
+        <DiplomasPanel
+          turma={turma}
+          currentUser={currentUser}
+          onRefresh={onRefreshTurma}
         />
       )}
 
