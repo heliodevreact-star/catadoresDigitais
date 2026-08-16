@@ -39,7 +39,7 @@ export async function PATCH(req: NextRequest, { params }: Ctx) {
     }
   }
 
-  const allowed = ['title', 'description', 'achievedDate', 'recipientEmails']
+  const allowed = ['title', 'description', 'achievedDate', 'hours', 'recipientEmails']
   const update: Record<string, unknown> = {}
   for (const key of allowed) {
     if (key in body) update[key] = body[key]

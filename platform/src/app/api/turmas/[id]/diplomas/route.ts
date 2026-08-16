@@ -39,8 +39,9 @@ export async function POST(
   const { id } = await params
   const body = await req.json()
 
-  if (!body.title?.trim() || !body.achievedDate) {
-    return Response.json({ error: 'Título e data são obrigatórios.' }, { status: 400 })
+  const hours = Number(body.hours)
+  if (!body.title?.trim() || !body.achievedDate || !Number.isFinite(hours) || hours <= 0) {
+    return Response.json({ error: 'Título, data e carga horária são obrigatórios.' }, { status: 400 })
   }
 
   const turmaResult = await assertTurmaEditable(id, auth.role)
@@ -60,6 +61,7 @@ export async function POST(
       title: body.title.trim(),
       description: body.description?.trim() ?? '',
       achievedDate: body.achievedDate,
+      hours,
       recipientEmails,
       issuedEmails: [],
       createdBy: auth.uid,

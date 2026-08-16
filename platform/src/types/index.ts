@@ -65,6 +65,7 @@ export interface DiplomaMilestone {
   title: string
   description?: string
   achievedDate: string        // ISO date YYYY-MM-DD
+  hours: number                // carga horária do marco
   recipientEmails: string[]   // manually selected students
   issuedEmails: string[]      // subset already issued (dedupe + status)
   createdBy: string
@@ -79,6 +80,7 @@ export interface DiplomaEmitido {
   title: string
   description?: string
   achievedDate: string
+  hours: number
   studentEmail: string
   studentName: string
   studentCpf: string

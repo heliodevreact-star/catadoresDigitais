@@ -3,7 +3,7 @@
 import { useState, useRef } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
-  HiCheckBadge, HiPlus, HiTrash, HiChevronDown, HiChevronUp,
+  HiCheckBadge, HiPlus, HiTrash, HiPencilSquare, HiChevronDown, HiChevronUp,
   HiArrowTopRightOnSquare, HiPhoto, HiUsers,
 } from 'react-icons/hi2'
 import type { Turma, UserProfile, DiplomaMilestone } from '@/types'
@@ -26,10 +26,11 @@ interface Props {
 export function DiplomasPanel({ turma, currentUser, onRefresh }: Props) {
   const isAdmin = currentUser?.role === 'admin'
   const {
-    milestones, milestonesLoading, createMilestone, deleteMilestone, deletingMilestone, issueMilestone,
+    milestones, milestonesLoading, createMilestone, updateMilestone, deleteMilestone, deletingMilestone, issueMilestone,
   } = useDiplomas(turma.id)
 
   const [creatingMilestone, setCreatingMilestone] = useState(false)
+  const [editingMilestoneId, setEditingMilestoneId] = useState<string | null>(null)
   const [issuingMilestoneId, setIssuingMilestoneId] = useState<string | null>(null)
 
   return (
@@ -75,6 +76,7 @@ export function DiplomasPanel({ turma, currentUser, onRefresh }: Props) {
                 }
               }}
               onIssue={() => setIssuingMilestoneId(m.id)}
+              onEdit={() => setEditingMilestoneId(m.id)}
             />
           ))}
         </div>
@@ -90,6 +92,22 @@ export function DiplomasPanel({ turma, currentUser, onRefresh }: Props) {
             onClose={() => setCreatingMilestone(false)}
             onCreate={createMilestone}
             onCreated={() => setCreatingMilestone(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {editingMilestoneId && (
+          <DiplomaMilestoneModal
+            turmaId={turma.id}
+            turmaIconColor={turma.iconColor}
+            turmaStartDate={turma.startDate}
+            turmaEndDate={turma.endDate}
+            milestone={milestones.find((m) => m.id === editingMilestoneId)}
+            onClose={() => setEditingMilestoneId(null)}
+            onCreate={createMilestone}
+            onUpdate={updateMilestone}
+            onCreated={() => setEditingMilestoneId(null)}
           />
         )}
       </AnimatePresence>
@@ -200,9 +218,10 @@ interface MilestoneCardProps {
   deleting: boolean
   onDelete: () => void
   onIssue: () => void
+  onEdit: () => void
 }
 
-function MilestoneCard({ turmaId, turmaIconColor, milestone, isAdmin, deleting, onDelete, onIssue }: MilestoneCardProps) {
+function MilestoneCard({ turmaId, turmaIconColor, milestone, isAdmin, deleting, onDelete, onIssue, onEdit }: MilestoneCardProps) {
   const [expanded, setExpanded] = useState(false)
   const { issued, issuedLoading } = useIssuedDiplomas(turmaId, milestone.id, expanded)
 
@@ -222,6 +241,7 @@ function MilestoneCard({ turmaId, turmaIconColor, milestone, isAdmin, deleting, 
           <p className="text-sm font-semibold truncate" style={{ color: 'var(--c-text)' }}>{milestone.title}</p>
           <div className="flex items-center gap-3 mt-0.5 flex-wrap">
             <span className="text-xs" style={{ color: 'var(--c-subtle)' }}>{fmtDate(milestone.achievedDate)}</span>
+            <span className="text-xs" style={{ color: 'var(--c-subtle)' }}>{milestone.hours}h</span>
             <span className="flex items-center gap-1 text-xs" style={{ color: 'var(--c-subtle)' }}>
               <HiUsers className="w-3 h-3" /> {milestone.recipientEmails.length} selecionado{milestone.recipientEmails.length !== 1 ? 's' : ''}
             </span>
@@ -241,6 +261,16 @@ function MilestoneCard({ turmaId, turmaIconColor, milestone, isAdmin, deleting, 
               Emitir ({pendingCount})
             </button>
           )}
+          <Tooltip label="Editar marco">
+            <button
+              onClick={onEdit}
+              aria-label="Editar marco"
+              className="w-7 h-7 flex items-center justify-center rounded-lg transition-opacity hover:opacity-80"
+              style={{ color: 'var(--c-subtle)' }}
+            >
+              <HiPencilSquare className="w-3.5 h-3.5" />
+            </button>
+          </Tooltip>
           {milestone.issuedEmails.length > 0 && (
             <Tooltip label={expanded ? 'Ocultar emitidos' : 'Ver emitidos'}>
               <button

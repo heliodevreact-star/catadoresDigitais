@@ -7,7 +7,16 @@ interface CreateMilestoneInput {
   title: string
   description?: string
   achievedDate: string
+  hours: number
   recipientEmails: string[]
+}
+
+interface UpdateMilestoneInput {
+  milestoneId: string
+  title: string
+  description?: string
+  achievedDate: string
+  hours: number
 }
 
 interface IssueInput {
@@ -43,6 +52,19 @@ export function useDiplomas(turmaId: string) {
     onSuccess: () => queryClient.invalidateQueries({ queryKey }),
   })
 
+  const updateMutation = useMutation({
+    mutationFn: ({ milestoneId, ...input }: UpdateMilestoneInput) =>
+      fetch(`/api/turmas/${turmaId}/diplomas/${milestoneId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(input),
+      }).then(async (r) => {
+        if (!r.ok) throw new Error((await r.json()).error ?? 'Erro ao salvar diploma.')
+        return r.json()
+      }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey }),
+  })
+
   const deleteMutation = useMutation({
     mutationFn: (milestoneId: string) =>
       fetch(`/api/turmas/${turmaId}/diplomas/${milestoneId}`, { method: 'DELETE' }),
@@ -68,6 +90,8 @@ export function useDiplomas(turmaId: string) {
     milestonesLoading: query.isLoading,
     createMilestone: createMutation.mutateAsync,
     creatingMilestone: createMutation.isPending,
+    updateMilestone: updateMutation.mutateAsync,
+    updatingMilestone: updateMutation.isPending,
     deleteMilestone: deleteMutation.mutateAsync,
     deletingMilestone: deleteMutation.isPending ? deleteMutation.variables! : null,
     issueMilestone: issueMutation.mutateAsync,

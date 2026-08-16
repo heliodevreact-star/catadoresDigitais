@@ -90,6 +90,7 @@ export async function POST(req: NextRequest, { params }: Ctx) {
       title: milestone.title,
       description: milestone.description ?? '',
       achievedDate: milestone.achievedDate,
+      hours: milestone.hours,
       studentEmail: r.email,
       studentName,
       studentCpf: r.cpf,

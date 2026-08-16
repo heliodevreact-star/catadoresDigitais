@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { HiXMark, HiCheckBadge } from 'react-icons/hi2'
 import { inputStyle } from '@/lib/styles'
+import type { DiplomaMilestone } from '@/types'
 
 const ease = [0.32, 0.72, 0, 1] as const
 
@@ -12,24 +13,36 @@ interface StudentOption {
   name: string | null
 }
 
+interface SaveInput {
+  title: string
+  description?: string
+  achievedDate: string
+  hours: number
+  recipientEmails: string[]
+}
+
 interface Props {
   turmaId: string
   turmaIconColor: string
   turmaStartDate: string
   turmaEndDate: string
+  milestone?: DiplomaMilestone
   onClose: () => void
-  onCreate: (input: { title: string; description?: string; achievedDate: string; recipientEmails: string[] }) => Promise<unknown>
+  onCreate: (input: SaveInput) => Promise<unknown>
+  onUpdate?: (input: SaveInput & { milestoneId: string }) => Promise<unknown>
   onCreated: () => void
 }
 
 export function DiplomaMilestoneModal({
-  turmaId, turmaIconColor, turmaStartDate, turmaEndDate, onClose, onCreate, onCreated,
+  turmaId, turmaIconColor, turmaStartDate, turmaEndDate, milestone, onClose, onCreate, onUpdate, onCreated,
 }: Props) {
-  const [title, setTitle] = useState('')
-  const [description, setDescription] = useState('')
-  const [achievedDate, setAchievedDate] = useState('')
+  const isEdit = !!milestone
+  const [title, setTitle] = useState(milestone?.title ?? '')
+  const [description, setDescription] = useState(milestone?.description ?? '')
+  const [achievedDate, setAchievedDate] = useState(milestone?.achievedDate ?? '')
+  const [hours, setHours] = useState(milestone?.hours ? String(milestone.hours) : '')
   const [students, setStudents] = useState<StudentOption[]>([])
-  const [selected, setSelected] = useState<string[]>([])
+  const [selected, setSelected] = useState<string[]>(milestone?.recipientEmails ?? [])
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -47,18 +60,26 @@ export function DiplomaMilestoneModal({
   async function handleSave() {
     if (!title.trim()) return setError('O título é obrigatório.')
     if (!achievedDate) return setError('Selecione a data em que o marco foi alcançado.')
+    const hoursNum = Number(hours)
+    if (!Number.isFinite(hoursNum) || hoursNum <= 0) return setError('Informe a carga horária (em horas).')
     setError(null)
     setSaving(true)
     try {
-      await onCreate({
+      const input: SaveInput = {
         title: title.trim(),
         description: description.trim() || undefined,
         achievedDate,
+        hours: hoursNum,
         recipientEmails: selected,
-      })
+      }
+      if (isEdit && onUpdate) {
+        await onUpdate({ ...input, milestoneId: milestone.id })
+      } else {
+        await onCreate(input)
+      }
       onCreated()
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Erro ao criar diploma.')
+      setError(e instanceof Error ? e.message : 'Erro ao salvar diploma.')
     } finally {
       setSaving(false)
     }
@@ -92,7 +113,7 @@ export function DiplomaMilestoneModal({
             <div className="flex items-center gap-2 mb-1">
               <HiCheckBadge className="w-4 h-4 flex-shrink-0" style={{ color: turmaIconColor }} />
               <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: turmaIconColor }}>
-                Novo marco de diploma
+                {isEdit ? 'Editar marco de diploma' : 'Novo marco de diploma'}
               </span>
             </div>
             <input
@@ -116,19 +137,35 @@ export function DiplomaMilestoneModal({
 
         {/* Body */}
         <div className="flex flex-col gap-5 p-5 overflow-y-auto">
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-medium" style={{ color: 'var(--c-subtle)' }}>
-              Data em que o marco foi alcançado
-            </label>
-            <input
-              type="date"
-              value={achievedDate}
-              min={turmaStartDate}
-              max={turmaEndDate}
-              onChange={(e) => setAchievedDate(e.target.value)}
-              className="rounded-xl px-3 py-2 text-sm border outline-none"
-              style={inputStyle}
-            />
+          <div className="flex gap-3">
+            <div className="flex flex-col gap-1.5 flex-1">
+              <label className="text-xs font-medium" style={{ color: 'var(--c-subtle)' }}>
+                Data em que o marco foi alcançado
+              </label>
+              <input
+                type="date"
+                value={achievedDate}
+                min={turmaStartDate}
+                max={turmaEndDate}
+                onChange={(e) => setAchievedDate(e.target.value)}
+                className="rounded-xl px-3 py-2 text-sm border outline-none"
+                style={inputStyle}
+              />
+            </div>
+            <div className="flex flex-col gap-1.5" style={{ width: 140 }}>
+              <label className="text-xs font-medium" style={{ color: 'var(--c-subtle)' }}>
+                Carga horária
+              </label>
+              <input
+                type="number"
+                min={1}
+                value={hours}
+                onChange={(e) => setHours(e.target.value)}
+                placeholder="Horas"
+                className="rounded-xl px-3 py-2 text-sm border outline-none"
+                style={inputStyle}
+              />
+            </div>
           </div>
 
           <div className="flex flex-col gap-2">
@@ -199,7 +236,7 @@ export function DiplomaMilestoneModal({
               className="flex-1 py-2.5 rounded-xl text-sm font-bold transition-opacity disabled:opacity-50"
               style={{ background: turmaIconColor, color: '#fff' }}
             >
-              {saving ? 'Criando...' : 'Criar marco'}
+              {saving ? 'Salvando...' : isEdit ? 'Salvar alterações' : 'Criar marco'}
             </button>
           </div>
         </div>

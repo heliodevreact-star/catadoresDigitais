@@ -8,7 +8,7 @@ import type { DiplomaEmitido } from '@/types'
 // react-pdf's image decoder só suporta PNG/JPEG (sem webp) — os logos precisam
 // estar num desses formatos. ipes-logo.png é uma conversão do ipes-logo.webp.
 const IPES_LOGO = fs.readFileSync(path.join(process.cwd(), 'public', 'ipes-logo.png'))
-const CAIXA_LOGO = fs.readFileSync(path.join(process.cwd(), 'public', 'CAIXA_2cores_positiva.png'))
+const CAIXA_LOGO = fs.readFileSync(path.join(process.cwd(), 'public', 'caixa_fsa_light.png'))
 
 function fmtDiplomaDate(iso: string): string {
   return parseLocalDate(iso).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     maxWidth: 480,
   },
-  studentName: { fontWeight: 700 },
+  bold: { fontWeight: 700 },
   footer: {
     display: 'flex',
     flexDirection: 'row',
@@ -97,10 +97,12 @@ function DiplomaDocument({ diploma, qrDataUrl }: { diploma: DiplomaEmitido; qrDa
           <Text style={styles.title}>{diploma.title}</Text>
 
           <Text style={styles.body}>
-            Certificamos que <Text style={styles.studentName}>{diploma.studentName}</Text>, CPF{' '}
+            Certificamos que <Text style={styles.bold}>{diploma.studentName}</Text>, CPF{' '}
             {formatCPF(diploma.studentCpf)}
-            {diploma.description ? `, ${diploma.description}` : ''}, em {fmtDiplomaDate(diploma.achievedDate)}, no
-            curso {diploma.turmaName}.
+            {diploma.description ? `, ${diploma.description}` : ''}, com carga horária de{' '}
+            <Text style={styles.bold}>{diploma.hours} horas</Text>, em{' '}
+            <Text style={styles.bold}>{fmtDiplomaDate(diploma.achievedDate)}</Text>, no curso{' '}
+            <Text style={styles.bold}>{diploma.turmaName}</Text>.
           </Text>
 
           <View style={styles.footer}>

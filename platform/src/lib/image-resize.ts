@@ -1,7 +1,12 @@
-/** Redimensiona/comprime uma imagem no client antes de guardar como base64 (usado na assinatura do coordenador). */
+/**
+ * Redimensiona uma imagem no client antes de guardar como base64 (usado na assinatura do coordenador).
+ * Exporta PNG (sem achatar num fundo) para preservar transparência — uma assinatura com fundo
+ * transparente convertida pra JPEG ganha um fundo sólido e artefatos de compressão em blocos
+ * (aparecem como um cinza claro ao redor do traço), então PNG é o formato certo aqui.
+ */
 export function resizeImageToDataUrl(
   file: File,
-  { maxWidth = 400, maxHeight = 160, quality = 0.85 }: { maxWidth?: number; maxHeight?: number; quality?: number } = {}
+  { maxWidth = 400, maxHeight = 160 }: { maxWidth?: number; maxHeight?: number } = {}
 ): Promise<string> {
   return new Promise((resolve, reject) => {
     const img = new window.Image()
@@ -20,11 +25,9 @@ export function resizeImageToDataUrl(
       const ctx = canvas.getContext('2d')
       if (!ctx) return reject(new Error('Canvas não suportado.'))
 
-      ctx.fillStyle = '#ffffff'
-      ctx.fillRect(0, 0, width, height)
       ctx.drawImage(img, 0, 0, width, height)
 
-      resolve(canvas.toDataURL('image/jpeg', quality))
+      resolve(canvas.toDataURL('image/png'))
     }
     img.onerror = () => {
       URL.revokeObjectURL(objectUrl)
