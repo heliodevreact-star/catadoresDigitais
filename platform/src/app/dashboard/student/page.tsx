@@ -89,9 +89,10 @@ export default function StudentDashboard() {
   const freqPct = frequencia?.percentage ?? null
   const freqLow = freqPct !== null && freqPct < 85
 
+  const nextAulaDates = Array.from(new Set(upcoming.map((a) => a.date))).slice(0, 3)
+
   const stats = [
     { label: 'Aulas esta semana', value: aulasThisWeek, icon: <HiCalendarDays className="w-5 h-5" />, loading: aulasLoading },
-    { label: 'Próximas aulas', value: upcoming.length, icon: <HiClock className="w-5 h-5" />, loading: aulasLoading },
   ]
 
   return (
@@ -141,6 +142,35 @@ export default function StudentDashboard() {
                 </div>
               </div>
             ))}
+
+            {/* Próximas aulas */}
+            <div
+              className="rounded-2xl p-5 border flex flex-col gap-3"
+              style={{ background: 'var(--c-bg-alt)', borderColor: 'var(--c-border)' }}
+            >
+              <div
+                className="w-9 h-9 rounded-xl flex items-center justify-center"
+                style={{ background: 'var(--c-border)', color: 'var(--c-subtle)' }}
+              >
+                <HiClock className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-xs" style={{ color: 'var(--c-subtle)' }}>Próximas aulas</p>
+                {aulasLoading ? (
+                  <Sk className="h-8 w-14 mt-0.5" />
+                ) : nextAulaDates.length === 0 ? (
+                  <p className="text-sm font-semibold mt-1.5" style={{ color: 'var(--c-text)' }}>Nenhuma aula agendada</p>
+                ) : (
+                  <div className="flex flex-col gap-0.5 mt-1">
+                    {nextAulaDates.map((date) => (
+                      <p key={date} className="text-sm font-bold capitalize" style={{ color: 'var(--c-text)' }}>
+                        {formatDateLabel(date)}
+                      </p>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
 
             {/* Frequência */}
             <div
