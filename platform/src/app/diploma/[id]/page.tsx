@@ -34,7 +34,7 @@ export default async function DiplomaVerificationPage({
       >
         <div className="flex items-center gap-6">
           <Image src="/ipes-logo.webp" alt="Instituto Ipês" width={56} height={56} className="object-contain" style={{ height: 48, width: 'auto' }} />
-          <Image src="/CAIXA_2cores_positiva.png" alt="Caixa Econômica Federal" width={100} height={40} className="object-contain" style={{ height: 32, width: 'auto' }} />
+          <Image src="/caixa_fsa_light.png" alt="Caixa Econômica Federal" width={100} height={40} className="object-contain" style={{ height: 32, width: 'auto' }} />
         </div>
 
         <div className="flex flex-col items-center gap-2">
