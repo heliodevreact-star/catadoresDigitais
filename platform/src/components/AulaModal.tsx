@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { HiXMark, HiPencilSquare, HiTrash, HiArrowTopRightOnSquare } from 'react-icons/hi2'
@@ -144,7 +145,7 @@ export function AulaModal({
     (t) => !form.teachers.find((ft) => ft.uid === t.uid)
   )
 
-  return (
+  return createPortal(
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -457,6 +458,7 @@ export function AulaModal({
           )}
         </div>
       </motion.div>
-    </motion.div>
+    </motion.div>,
+    document.body
   )
 }
