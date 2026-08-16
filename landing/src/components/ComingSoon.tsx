@@ -6,7 +6,8 @@ import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { useTheme } from '../context/ThemeContext';
 import { db } from '../lib/firebase';
 
-const EMAIL_REGEX = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+const EMAIL_MAX_LENGTH = 254;
 
 const priorities = [
   {
@@ -44,15 +45,16 @@ export function ComingSoon() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const trimmed = email.trim().toLowerCase();
-    if (!EMAIL_REGEX.test(trimmed)) {
-      setError('Digite um email válido.');
-      return;
-    }
 
     // Campo isca: bots costumam preencher todos os campos, humanos não veem este.
     if (honeypot) {
       setSubmitted(true);
+      return;
+    }
+
+    const trimmed = email.trim().toLowerCase();
+    if (trimmed.length > EMAIL_MAX_LENGTH || !EMAIL_REGEX.test(trimmed)) {
+      setError('Digite um email válido.');
       return;
     }
 
@@ -65,7 +67,8 @@ export function ComingSoon() {
         createdAt: serverTimestamp(),
       });
       setSubmitted(true);
-    } catch {
+    } catch (err) {
+      console.error('Falha ao registrar lead:', err);
       setError('Não foi possível enviar agora. Tente novamente em instantes.');
     } finally {
       setSubmitting(false);
@@ -201,19 +204,22 @@ export function ComingSoon() {
                 >
                   <input
                     type="text"
-                    name="company"
+                    name="hp_confirm_9x2"
                     value={honeypot}
                     onChange={(e) => setHoneypot(e.target.value)}
                     tabIndex={-1}
                     autoComplete="off"
                     aria-hidden="true"
-                    className="absolute w-px h-px opacity-0 pointer-events-none -z-10"
+                    style={{ position: 'absolute', left: '-9999px', top: 'auto', width: 1, height: 1, overflow: 'hidden' }}
                   />
                   <input
                     type="email"
+                    inputMode="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    maxLength={EMAIL_MAX_LENGTH}
                     placeholder="Seu melhor email"
+                    autoComplete="email"
                     className="flex-1 bg-[var(--c-input-bg)] border border-[var(--c-border)] text-[var(--c-text)] placeholder-[var(--c-subtle)] font-dm text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-brand-yellow/50 transition-colors"
                   />
                   <button
