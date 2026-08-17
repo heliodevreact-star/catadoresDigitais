@@ -22,7 +22,7 @@ export function Marquee() {
             <span className="font-syne font-bold text-sm tracking-wide text-[var(--c-faint)] uppercase">
               {tag}
             </span>
-            <span className="w-1.5 h-1.5 rounded-full bg-brand-yellow/50 flex-shrink-0" />
+            <span className="w-1.5 h-1.5 rounded-full bg-brand-blue/50 flex-shrink-0" />
           </div>
         ))}
       </div>

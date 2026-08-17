@@ -14,22 +14,22 @@ const priorities = [
     icon: HiOutlineUserGroup,
     title: 'Catadoras e catadores',
     desc: 'Profissionais de coleta de materiais recicláveis têm prioridade garantida nas vagas.',
-    color: '#FFC530',
-    textColor: 'var(--c-accent-yellow)',
+    color: '#83B80D',
+    textColor: 'var(--c-accent-green)',
   },
   {
     icon: HiOutlineUserGroup,
     title: 'Famílias',
     desc: 'Familiares de catadores também fazem parte do público prioritário das formações.',
-    color: '#A855F7',
-    textColor: 'var(--c-accent-purple)',
+    color: '#114BF2',
+    textColor: 'var(--c-accent-blue)',
   },
   {
     icon: HiOutlineMapPin,
     title: 'Moradores da Estrutural',
     desc: 'Quem vive na Cidade Estrutural e no entorno tem vaga prioritária em todas as turmas.',
-    color: '#FF6B35',
-    textColor: 'var(--c-accent-coral)',
+    color: '#4D1BBB',
+    textColor: 'var(--c-accent-violet)',
   },
 ];
 
@@ -81,15 +81,15 @@ export function ComingSoon() {
         className="absolute inset-0 transition-colors duration-500"
         style={{
           background: isDark
-            ? 'linear-gradient(to bottom, #06030F, #110730, #06030F)'
-            : 'linear-gradient(to bottom, #FFF5E3, #FFF0F5, #FFF5E3)',
+            ? 'linear-gradient(to bottom, #06030F, #0A2015, #06030F)'
+            : 'linear-gradient(to bottom, #F0F6FF, #F3FBE8, #F0F6FF)',
         }}
       />
       <div className="absolute top-0 left-0 right-0 section-divider" />
 
       {/* Decorative rings */}
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full border border-brand-yellow/5 pointer-events-none" />
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[480px] h-[480px] rounded-full border border-brand-yellow/5 pointer-events-none" />
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full border border-brand-green/5 pointer-events-none" />
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[480px] h-[480px] rounded-full border border-brand-blue/5 pointer-events-none" />
 
       <div ref={ref} className="relative z-10 max-w-5xl mx-auto px-6">
         {/* Coming soon badge */}
@@ -99,7 +99,7 @@ export function ComingSoon() {
           transition={{ duration: 0.5 }}
           className="flex justify-center mb-8"
         >
-          <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-brand-yellow text-dark-950">
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-brand-green text-dark-950">
             <motion.div animate={{ rotate: 360 }} transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}>
               <HiSparkles className="w-4 h-4" />
             </motion.div>
@@ -115,7 +115,7 @@ export function ComingSoon() {
           className="font-syne font-extrabold text-4xl md:text-5xl lg:text-6xl text-[var(--c-text)] text-center mb-6 leading-tight"
         >
           As inscrições estão{' '}
-          <span className="text-gradient-yellow">chegando.</span>
+          <span className="text-[var(--c-accent-blue)]">chegando.</span>
         </motion.h2>
 
         <motion.p
@@ -168,9 +168,9 @@ export function ComingSoon() {
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.55 }}
           className="relative rounded-3xl p-8 md:p-12 overflow-hidden text-center glass-card"
-          style={{ borderColor: 'rgba(255,197,48,0.2)' }}
+          style={{ borderColor: 'rgba(17,75,242,0.2)' }}
         >
-          <HiOutlineCalendar className="w-10 h-10 text-[var(--c-accent-yellow)] mx-auto mb-5" />
+          <HiOutlineCalendar className="w-10 h-10 text-[var(--c-accent-blue)] mx-auto mb-5" />
           <h3 className="font-syne font-extrabold text-2xl md:text-3xl text-[var(--c-text)] mb-3">
             Seja o primeiro a saber
           </h3>
@@ -188,7 +188,7 @@ export function ComingSoon() {
                 transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                 className="flex flex-col items-center gap-3"
               >
-                <HiCheckCircle className="w-10 h-10 text-[var(--c-accent-yellow)]" />
+                <HiCheckCircle className="w-10 h-10 text-[var(--c-accent-green)]" />
                 <p className="font-syne font-bold text-xl text-[var(--c-text)]">
                   Recebemos!
                 </p>
@@ -220,12 +220,12 @@ export function ComingSoon() {
                     maxLength={EMAIL_MAX_LENGTH}
                     placeholder="Seu melhor email"
                     autoComplete="email"
-                    className="flex-1 bg-[var(--c-input-bg)] border border-[var(--c-border)] text-[var(--c-text)] placeholder-[var(--c-subtle)] font-dm text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-brand-yellow/50 transition-colors"
+                    className="flex-1 bg-[var(--c-input-bg)] border border-[var(--c-border)] text-[var(--c-text)] placeholder-[var(--c-subtle)] font-dm text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-brand-blue/50 transition-colors"
                   />
                   <button
                     type="submit"
-                    className="font-syne font-bold text-dark-950 px-6 py-3 rounded-xl whitespace-nowrap transition-opacity hover:opacity-90 disabled:opacity-50"
-                    style={{ background: 'linear-gradient(135deg, #FFC530, #FF6B35)' }}
+                    className="font-syne font-bold text-white px-6 py-3 rounded-xl whitespace-nowrap transition-opacity hover:opacity-90 disabled:opacity-50"
+                    style={{ background: 'linear-gradient(135deg, #517208, #114BF2)' }}
                     disabled={!email.trim() || submitting}
                   >
                     {submitting ? 'Enviando...' : 'Avisar quando abrir'}

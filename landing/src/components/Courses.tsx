@@ -12,11 +12,11 @@ const courses = [
     tag: 'Curso 01',
     title: 'Produção de Games',
     tagline: 'Do pixel à publicação',
-    color: '#A855F7',          /* decorative: borders, icon bg, dots */
-    textColor: 'var(--c-accent-purple)', /* readable text — accessible in both modes */
-    gradient: 'from-[#A855F7]/10 to-[#7C3AED]/5',
-    border: 'border-[#A855F7]/20',
-    glow: 'rgba(168,85,247,0.12)',
+    color: '#4D1BBB',          /* decorative: borders, icon bg, dots */
+    textColor: 'var(--c-accent-violet)', /* readable text — accessible in both modes */
+    gradient: 'from-[#4D1BBB]/10 to-[#4D1BBB]/5',
+    border: 'border-[#4D1BBB]/20',
+    glow: 'rgba(77,27,187,0.12)',
     description:
       'Crie jogos do zero usando ferramentas modernas e inteligência artificial como amplificadora da sua criatividade. O curso termina com seu jogo publicado online — um portfólio real para o mercado.',
     outcomes: [
@@ -33,11 +33,11 @@ const courses = [
     tag: 'Curso 02',
     title: 'Desenvolvimento Web',
     tagline: 'Sites que as pessoas vão usar de verdade',
-    color: '#FFC530',
-    textColor: 'var(--c-accent-yellow)',
-    gradient: 'from-[#FFC530]/10 to-[#FF6B35]/5',
-    border: 'border-[#FFC530]/25',
-    glow: 'rgba(255,197,48,0.12)',
+    color: '#114BF2',
+    textColor: 'var(--c-accent-blue)',
+    gradient: 'from-[#114BF2]/10 to-[#114BF2]/5',
+    border: 'border-[#114BF2]/25',
+    glow: 'rgba(17,75,242,0.12)',
     description:
       'Aprenda a construir sites reais com HTML, CSS, JavaScript e ferramentas de IA. O projeto final é um site para um negócio ou iniciativa real da sua comunidade — alguém vai usar o que você criar.',
     outcomes: [
@@ -54,11 +54,11 @@ const courses = [
     tag: 'Curso 03',
     title: 'Marketing Digital e Redes Sociais',
     tagline: 'Estratégia, conteúdo e resultado',
-    color: '#FF6B35',
-    textColor: 'var(--c-accent-coral)',
-    gradient: 'from-[#FF6B35]/10 to-[#FF9068]/5',
-    border: 'border-[#FF6B35]/20',
-    glow: 'rgba(255,107,53,0.12)',
+    color: '#83B80D',
+    textColor: 'var(--c-accent-green)',
+    gradient: 'from-[#83B80D]/10 to-[#83B80D]/5',
+    border: 'border-[#83B80D]/20',
+    glow: 'rgba(131,184,13,0.12)',
     description:
       'Domine as ferramentas do marketing digital: criação de conteúdo, estratégia para redes sociais, anúncios e IA para escalar resultados. O projeto final é um plano de marketing executado para um negócio da comunidade.',
     outcomes: [
@@ -90,7 +90,7 @@ export function Courses() {
     <section id="cursos" className="relative py-24 md:py-32 overflow-hidden">
       <div
         className="absolute inset-0 transition-colors duration-500"
-        style={{ background: isDark ? 'linear-gradient(to bottom, #06030F, #0F0A1E, #06030F)' : 'linear-gradient(to bottom, #FFFFFF, #F1F0FC, #FFFFFF)' }}
+        style={{ background: isDark ? 'linear-gradient(to bottom, #06030F, #0A1420, #06030F)' : 'linear-gradient(to bottom, #FFFFFF, #F2F7EC, #FFFFFF)' }}
       />
       <div className="absolute top-0 left-0 right-0 section-divider" />
 
@@ -103,8 +103,8 @@ export function Courses() {
           transition={{ duration: 0.7 }}
           className="text-center mb-16 md:mb-20"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-brand-yellow/20 bg-brand-yellow/10 mb-6">
-            <span className="font-dm text-sm font-medium text-[var(--c-accent-yellow)] tracking-wide">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-brand-green/20 bg-brand-green/10 mb-6">
+            <span className="font-dm text-sm font-medium text-[var(--c-accent-green)] tracking-wide">
               Três trilhas, um destino
             </span>
           </div>
@@ -199,7 +199,7 @@ export function Courses() {
           className="mt-14 p-7 md:p-10 rounded-2xl border border-[var(--c-border)] glass-card text-center"
         >
           <p className="font-dm text-base md:text-lg text-[var(--c-muted)] max-w-3xl mx-auto leading-relaxed">
-            <span className="text-[var(--c-accent-yellow)] font-semibold">Project-Based Learning + IA.</span>{' '}
+            <span className="text-[var(--c-accent-blue)] font-semibold">Project-Based Learning + IA.</span>{' '}
             A metodologia que atravessa os três cursos: aprenda resolvendo problemas reais,
             amplificado por inteligência artificial — não como atalho, mas como ferramenta.
             Dewey já sabia:{' '}

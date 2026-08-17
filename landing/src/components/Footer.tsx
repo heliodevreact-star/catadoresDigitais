@@ -35,7 +35,7 @@ export function Footer() {
                 <li key={link.hash}>
                   <a
                     href={sectionHref(link.hash)}
-                    className="font-dm text-sm text-[var(--c-muted)] hover:text-brand-yellow transition-colors"
+                    className="font-dm text-sm text-[var(--c-muted)] hover:text-brand-blue transition-colors"
                   >
                     {link.label}
                   </a>
@@ -44,7 +44,7 @@ export function Footer() {
               <li>
                 <Link
                   to="/vagas"
-                  className="font-dm text-sm text-[var(--c-muted)] hover:text-brand-yellow transition-colors"
+                  className="font-dm text-sm text-[var(--c-muted)] hover:text-brand-blue transition-colors"
                 >
                   Vagas
                 </Link>
@@ -58,7 +58,7 @@ export function Footer() {
             </p>
             <a
               href="mailto:contato@institutoipes.org.br"
-              className="flex items-center gap-2 font-dm text-sm text-[var(--c-muted)] hover:text-brand-yellow transition-colors"
+              className="flex items-center gap-2 font-dm text-sm text-[var(--c-muted)] hover:text-brand-blue transition-colors"
             >
               <HiOutlineEnvelope className="w-4 h-4" />
               contato@institutoipes.org.br
@@ -77,7 +77,7 @@ export function Footer() {
             <motion.span
               animate={{ scale: [1, 1.2, 1] }}
               transition={{ duration: 1.5, repeat: Infinity }}
-              className="text-brand-coral text-xs"
+              className="text-brand-green text-xs"
             >
               ♥
             </motion.span>

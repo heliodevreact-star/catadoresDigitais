@@ -50,7 +50,7 @@ export function Navbar() {
               <a
                 key={link.hash}
                 href={sectionHref(link.hash)}
-                className="font-dm font-medium text-[var(--c-muted)] hover:text-brand-yellow transition-colors duration-200 text-sm tracking-wide"
+                className="font-dm font-medium text-[var(--c-muted)] hover:text-brand-blue transition-colors duration-200 text-sm tracking-wide"
               >
                 {link.label}
               </a>
@@ -58,7 +58,7 @@ export function Navbar() {
             <Link
               to="/vagas"
               className={`font-dm font-medium transition-colors duration-200 text-sm tracking-wide ${
-                pathname === '/vagas' ? 'text-brand-yellow' : 'text-[var(--c-muted)] hover:text-brand-yellow'
+                pathname === '/vagas' ? 'text-brand-blue' : 'text-[var(--c-muted)] hover:text-brand-blue'
               }`}
             >
               Vagas
@@ -71,14 +71,14 @@ export function Navbar() {
             <button
               onClick={toggle}
               aria-label="Alternar tema"
-              className="w-9 h-9 rounded-full border border-[var(--c-border)] flex items-center justify-center text-[var(--c-subtle)] hover:text-brand-yellow hover:border-brand-yellow/30 transition-colors duration-200"
+              className="w-9 h-9 rounded-full border border-[var(--c-border)] flex items-center justify-center text-[var(--c-subtle)] hover:text-brand-blue hover:border-brand-blue/30 transition-colors duration-200"
             >
               {isDark ? <HiOutlineSun className="w-4 h-4" /> : <HiOutlineMoon className="w-4 h-4" />}
             </button>
 
             <a
               href={sectionHref('#inscricoes')}
-              className="font-dm font-semibold text-sm text-dark-950 bg-brand-yellow hover:bg-brand-yellow-light transition-colors duration-200 px-4 py-2 rounded-full"
+              className="font-dm font-semibold text-sm text-white bg-brand-blue hover:bg-brand-blue-dark transition-colors duration-200 px-4 py-2 rounded-full"
             >
               Em breve
             </a>
@@ -120,7 +120,7 @@ export function Navbar() {
                   key={link.hash}
                   href={sectionHref(link.hash)}
                   onClick={() => setMenuOpen(false)}
-                  className="font-dm font-semibold text-lg text-[var(--c-text)] hover:text-brand-yellow transition-colors py-1 border-b border-[var(--c-border)]"
+                  className="font-dm font-semibold text-lg text-[var(--c-text)] hover:text-brand-blue transition-colors py-1 border-b border-[var(--c-border)]"
                 >
                   {link.label}
                 </a>
@@ -128,7 +128,7 @@ export function Navbar() {
               <Link
                 to="/vagas"
                 onClick={() => setMenuOpen(false)}
-                className="font-dm font-semibold text-lg text-[var(--c-text)] hover:text-brand-yellow transition-colors py-1 border-b border-[var(--c-border)]"
+                className="font-dm font-semibold text-lg text-[var(--c-text)] hover:text-brand-blue transition-colors py-1 border-b border-[var(--c-border)]"
               >
                 Vagas
               </Link>
@@ -136,7 +136,7 @@ export function Navbar() {
                 <a
                   href={sectionHref('#inscricoes')}
                   onClick={() => setMenuOpen(false)}
-                  className="text-center font-dm font-semibold text-dark-950 bg-brand-yellow py-3 rounded-xl"
+                  className="text-center font-dm font-semibold text-white bg-brand-blue py-3 rounded-xl"
                 >
                   Em breve — Inscrições
                 </a>

@@ -21,10 +21,10 @@ const tracks = [
     id: 1,
     icon: BsController,
     title: 'Produção de Games',
-    color: '#A855F7',
-    textColor: 'var(--c-accent-purple)',
-    border: 'border-[#A855F7]/20',
-    gradient: 'from-[#A855F7]/10 to-[#7C3AED]/5',
+    color: '#4D1BBB',
+    textColor: 'var(--c-accent-violet)',
+    border: 'border-[#4D1BBB]/20',
+    gradient: 'from-[#4D1BBB]/10 to-[#4D1BBB]/5',
     need: 'Pessoas com vivência em desenvolvimento de jogos, design de personagens/cenários ou ferramentas de criação como Godot e outras soluções open source.',
     pdf: 'Pedido orçamento PROFESSOR(A) — PRODUÇÃO DE GAMES.docx.pdf',
   },
@@ -32,10 +32,10 @@ const tracks = [
     id: 2,
     icon: HiOutlineCommandLine,
     title: 'Desenvolvimento Web',
-    color: '#FFC530',
-    textColor: 'var(--c-accent-yellow)',
-    border: 'border-[#FFC530]/25',
-    gradient: 'from-[#FFC530]/10 to-[#FF6B35]/5',
+    color: '#114BF2',
+    textColor: 'var(--c-accent-blue)',
+    border: 'border-[#114BF2]/25',
+    gradient: 'from-[#114BF2]/10 to-[#114BF2]/5',
     need: 'Pessoas com experiência prática desde o HTML, CSS, JavaScript até chegar no ReactJS, com perfil Full Stack e generalista para guiar os alunos do código à publicação.',
     pdf: 'Pedido orçamento PROFESSOR(A) — DESENVOLVIMENTO WEB.docx.pdf',
   },
@@ -43,10 +43,10 @@ const tracks = [
     id: 3,
     icon: HiOutlineMegaphone,
     title: 'Marketing Digital e Redes Sociais',
-    color: '#FF6B35',
-    textColor: 'var(--c-accent-coral)',
-    border: 'border-[#FF6B35]/20',
-    gradient: 'from-[#FF6B35]/10 to-[#FF9068]/5',
+    color: '#83B80D',
+    textColor: 'var(--c-accent-green)',
+    border: 'border-[#83B80D]/20',
+    gradient: 'from-[#83B80D]/10 to-[#83B80D]/5',
     need: 'Pessoas com experiência em estratégia de conteúdo, redes sociais e anúncios, dispostas a ensinar na prática como criar um plano de marketing no mundo real.  ',
     pdf: 'Pedido orçamento PROFESSOR(A) — MARKETING DIGITAL E REDES SOCIAIS.docx.pdf',
   },
@@ -117,7 +117,7 @@ export function Vagas() {
       <section ref={headerRef} className="relative pt-32 pb-16 md:pt-40 md:pb-20 overflow-hidden">
         <div
           className="absolute inset-0 transition-colors duration-500"
-          style={{ background: isDark ? 'linear-gradient(to bottom, #06030F, #0F0A1E, #06030F)' : 'linear-gradient(to bottom, #FFFFFF, #F1F0FC, #FFFFFF)' }}
+          style={{ background: isDark ? 'linear-gradient(to bottom, #06030F, #0A1420, #06030F)' : 'linear-gradient(to bottom, #FFFFFF, #F2F7EC, #FFFFFF)' }}
         />
 
         <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
@@ -125,10 +125,10 @@ export function Vagas() {
             initial={{ opacity: 0, y: 20 }}
             animate={headerInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-brand-yellow/30 bg-brand-yellow/10 mb-8"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-brand-blue/30 bg-brand-blue/10 mb-8"
           >
-            <HiOutlineSparkles className="w-4 h-4 text-[var(--c-accent-yellow)]" />
-            <span className="font-dm text-sm font-medium text-[var(--c-accent-yellow)] tracking-wide">
+            <HiOutlineSparkles className="w-4 h-4 text-[var(--c-accent-blue)]" />
+            <span className="font-dm text-sm font-medium text-[var(--c-accent-blue)] tracking-wide">
               Chamada para professoras e professores
             </span>
           </motion.div>
@@ -140,7 +140,7 @@ export function Vagas() {
             className="font-syne font-extrabold text-4xl sm:text-5xl md:text-6xl leading-none tracking-tight mb-6"
           >
             <span className="text-[var(--c-text)]">Ensine o que você sabe.</span>{' '}
-            <span className="text-gradient-yellow">Transforme trajetórias.</span>
+            <span className="text-[var(--c-accent-blue)]">Transforme trajetórias.</span>
           </motion.h1>
 
           <motion.p
@@ -160,7 +160,7 @@ export function Vagas() {
       <section ref={tracksRef} className="relative py-16 md:py-20 overflow-hidden">
         <div
           className="absolute inset-0 transition-colors duration-500"
-          style={{ background: isDark ? 'linear-gradient(to bottom, #06030F, #0F0A1E, #06030F)' : 'linear-gradient(to bottom, #FFFFFF, #F1F0FC, #FFFFFF)' }}
+          style={{ background: isDark ? 'linear-gradient(to bottom, #06030F, #0A1420, #06030F)' : 'linear-gradient(to bottom, #FFFFFF, #F2F7EC, #FFFFFF)' }}
         />
         <div className="absolute top-0 left-0 right-0 section-divider" />
 
@@ -232,8 +232,8 @@ export function Vagas() {
           className="absolute inset-0 transition-colors duration-500"
           style={{
             background: isDark
-              ? 'linear-gradient(to bottom, #06030F, #110730, #06030F)'
-              : 'linear-gradient(to bottom, #FFF5E3, #FFF0F5, #FFF5E3)',
+              ? 'linear-gradient(to bottom, #06030F, #0A2015, #06030F)'
+              : 'linear-gradient(to bottom, #F0F6FF, #F3FBE8, #F0F6FF)',
           }}
         />
         <div className="absolute top-0 left-0 right-0 section-divider" />
@@ -246,7 +246,7 @@ export function Vagas() {
             className="text-center mb-14"
           >
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--c-border)] bg-[var(--c-input-bg)] mb-6">
-              <HiOutlineUserGroup className="w-4 h-4 text-[var(--c-accent-purple)]" />
+              <HiOutlineUserGroup className="w-4 h-4 text-[var(--c-accent-blue)]" />
               <span className="font-dm text-sm font-medium text-[var(--c-muted)] tracking-wide">
                 Quem estamos procurando
               </span>
@@ -270,8 +270,8 @@ export function Vagas() {
                   variants={cardVariants}
                   className="glass-card rounded-2xl p-6 flex items-start gap-4"
                 >
-                  <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 bg-brand-yellow/10">
-                    <Icon className="w-5 h-5 text-[var(--c-accent-yellow)]" />
+                  <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 bg-brand-blue/10">
+                    <Icon className="w-5 h-5 text-[var(--c-accent-blue)]" />
                   </div>
                   <div>
                     <h3 className="font-syne font-bold text-lg text-[var(--c-text)] mb-1.5">
@@ -292,7 +292,7 @@ export function Vagas() {
       <section ref={ctaRef} className="relative py-16 md:py-24 overflow-hidden">
         <div
           className="absolute inset-0 transition-colors duration-500"
-          style={{ background: isDark ? 'linear-gradient(to bottom, #06030F, #0F0A1E, #06030F)' : 'linear-gradient(to bottom, #FFFFFF, #F1F0FC, #FFFFFF)' }}
+          style={{ background: isDark ? 'linear-gradient(to bottom, #06030F, #0A1420, #06030F)' : 'linear-gradient(to bottom, #FFFFFF, #F2F7EC, #FFFFFF)' }}
         />
         <div className="absolute top-0 left-0 right-0 section-divider" />
 
@@ -302,8 +302,8 @@ export function Vagas() {
           transition={{ duration: 0.7 }}
           className="relative z-10 max-w-3xl mx-auto px-6"
         >
-          <div className="relative rounded-3xl p-8 md:p-12 overflow-hidden text-center glass-card" style={{ borderColor: 'rgba(255,197,48,0.2)' }}>
-            <HiOutlineEnvelope className="w-10 h-10 text-[var(--c-accent-yellow)] mx-auto mb-5" />
+          <div className="relative rounded-3xl p-8 md:p-12 overflow-hidden text-center glass-card" style={{ borderColor: 'rgba(17,75,242,0.2)' }}>
+            <HiOutlineEnvelope className="w-10 h-10 text-[var(--c-accent-blue)] mx-auto mb-5" />
             <h3 className="font-syne font-extrabold text-2xl md:text-3xl text-[var(--c-text)] mb-3">
               Quer fazer parte?
             </h3>
@@ -314,8 +314,8 @@ export function Vagas() {
 
             <a
               href={mailtoHref}
-              className="group inline-flex items-center gap-2 font-syne font-bold text-dark-950 px-8 py-4 rounded-2xl text-base transition-opacity hover:opacity-90"
-              style={{ background: 'linear-gradient(135deg, #FFC530 0%, #FF6B35 100%)' }}
+              className="group inline-flex items-center gap-2 font-syne font-bold text-white px-8 py-4 rounded-2xl text-base transition-opacity hover:opacity-90"
+              style={{ background: 'linear-gradient(135deg, #517208 0%, #114BF2 100%)' }}
             >
               Quero me candidatar
               <HiOutlineArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />

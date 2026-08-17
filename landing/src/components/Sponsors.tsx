@@ -24,8 +24,8 @@ export function Sponsors() {
         className="absolute inset-0 transition-colors duration-500"
         style={{
           background: isDark
-            ? 'linear-gradient(to bottom, #1f1b33, #26223f, #1f1b33)'
-            : 'linear-gradient(to bottom, #FFF8EE 0%, #FFF4E0 30%, #ffffff 58%, #ffffff 100%)',
+            ? 'linear-gradient(to bottom, #0A2015, #0D2A1B, #0A2015)'
+            : 'linear-gradient(to bottom, #F3FBE8 0%, #F0F6FF 30%, #ffffff 58%, #ffffff 100%)',
         }}
       />
       <div className="absolute top-0 left-0 right-0 section-divider" />
@@ -38,7 +38,7 @@ export function Sponsors() {
           className="flex justify-center mb-8"
         >
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--c-border)] bg-[var(--c-input-bg)]">
-            <HiOutlineHeart className="w-4 h-4 text-[var(--c-accent-coral)]" />
+            <HiOutlineHeart className="w-4 h-4 text-[var(--c-accent-green)]" />
             <span className="font-dm text-sm font-medium text-[var(--c-muted)] tracking-wide">
               Quem torna isso possível
             </span>
@@ -54,8 +54,8 @@ export function Sponsors() {
           {/* Box 1 — Realização / Instituto Ipês, tall left column */}
           <motion.div
             variants={cardVariants}
-            className="md:row-span-2 rounded-3xl p-8 md:p-9 flex flex-col justify-center items-center text-center bg-gradient-to-br from-[#A855F7]/10 to-transparent glass-card"
-            style={{ borderColor: 'rgba(168,85,247,0.2)' }}
+            className="md:row-span-2 rounded-3xl p-8 md:p-9 flex flex-col justify-center items-center text-center bg-gradient-to-br from-[#83B80D]/10 to-transparent glass-card"
+            style={{ borderColor: 'rgba(131,184,13,0.2)' }}
           >
             <a href="https://institutoipes.org.br/" target="_blank" rel="noopener noreferrer">
               <img

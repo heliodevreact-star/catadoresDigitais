@@ -9,14 +9,14 @@ export default {
     extend: {
       colors: {
         brand: {
-          yellow: '#FFC530',
-          'yellow-light': '#FFD970',
-          'yellow-dark': '#E6AD00',
-          coral: '#FF6B35',
-          purple: '#7C3AED',
-          'purple-light': '#A855F7',
-          cyan: '#06B6D4',
-          'cyan-light': '#38D9F5',
+          green: '#83B80D',
+          'green-light': '#CFF183',
+          'green-dark': '#6B9A0B',
+          blue: '#114BF2',
+          'blue-light': '#84A4FF',
+          'blue-dark': '#0D3BC2',
+          violet: '#4D1BBB',
+          'violet-light': '#A382ED',
         },
         dark: {
           950: '#06030F',
@@ -29,6 +29,7 @@ export default {
       fontFamily: {
         syne: ['"Barlow Condensed"', 'sans-serif'],
         dm: ['DM Sans', 'sans-serif'],
+        inter: ['Inter', 'sans-serif'],
       },
       animation: {
         'float': 'float 6s ease-in-out infinite',
