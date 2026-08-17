@@ -322,7 +322,7 @@ export function UserDetailPanel({ user, turmas, turmasLoading, onClose, onRoleUp
                       onClick={handleAddToTurma}
                       disabled={!selectedTurmaId || addingToTurma}
                       className="px-3 py-2 rounded-lg text-sm font-semibold transition-opacity disabled:opacity-50 flex-shrink-0"
-                      style={{ background: 'var(--c-gold)', color: 'var(--c-bg)' }}
+                      style={{ background: 'var(--c-accent-green)', color: 'var(--c-bg)' }}
                     >
                       {addingToTurma ? '...' : 'Adicionar'}
                     </button>

@@ -8,14 +8,14 @@ export const ROLE_LABEL: Record<Role, string> = {
 }
 
 export const ROLE_COLORS: Record<Role, string> = {
-  admin: 'var(--c-gold)',
-  teacher: 'var(--c-purple)',
+  admin: 'var(--c-accent-green)',
+  teacher: 'var(--c-accent-blue)',
   student: 'var(--c-info)',
 }
 
 export const ROLE_BG_COLORS: Record<Role, string> = {
-  admin: 'var(--c-gold-soft)',
-  teacher: 'var(--c-purple-soft)',
+  admin: 'var(--c-accent-green-soft)',
+  teacher: 'var(--c-accent-blue-soft)',
   student: 'var(--c-info-soft)',
 }
 

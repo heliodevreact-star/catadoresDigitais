@@ -29,7 +29,7 @@ export default function LeadsPage() {
             </Link>
           </Tooltip>
           <h2 className="text-2xl font-bold" style={{ color: 'var(--c-text)' }}>
-            Interessados na landing
+            Interessados nos cursos cadastrados através da landing page
           </h2>
         </div>
 

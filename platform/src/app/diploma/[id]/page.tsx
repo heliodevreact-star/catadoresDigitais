@@ -67,7 +67,7 @@ export default async function DiplomaVerificationPage({
           target="_blank"
           rel="noopener noreferrer"
           className="w-full py-3 rounded-xl text-sm font-bold text-center transition-opacity hover:opacity-90"
-          style={{ background: 'var(--c-accent-yellow)', color: 'var(--c-bg)' }}
+          style={{ background: 'var(--c-accent-blue)', color: 'var(--c-bg)' }}
         >
           Baixar PDF do diploma
         </a>

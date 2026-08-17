@@ -297,8 +297,8 @@ export default function AdminDashboard() {
             style={{ background: 'var(--c-bg-alt)', borderColor: 'var(--c-border)' }}
           >
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'var(--c-gold-soft)' }}>
-                <HiAcademicCap className="w-5 h-5" style={{ color: 'var(--c-gold)' }} />
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'var(--c-accent-green-soft)' }}>
+                <HiAcademicCap className="w-5 h-5" style={{ color: 'var(--c-accent-green)' }} />
               </div>
               <div>
                 <p className="font-semibold text-sm" style={{ color: 'var(--c-text)' }}>Turmas</p>
@@ -314,8 +314,8 @@ export default function AdminDashboard() {
             style={{ background: 'var(--c-bg-alt)', borderColor: 'var(--c-border)' }}
           >
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'var(--c-gold-soft)' }}>
-                <HiEnvelope className="w-5 h-5" style={{ color: 'var(--c-gold)' }} />
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'var(--c-accent-green-soft)' }}>
+                <HiEnvelope className="w-5 h-5" style={{ color: 'var(--c-accent-green)' }} />
               </div>
               <div>
                 <p className="font-semibold text-sm" style={{ color: 'var(--c-text)' }}>Interessados</p>
@@ -384,7 +384,7 @@ export default function AdminDashboard() {
                 type="submit"
                 disabled={addingToAllowlist || !newTurmaId}
                 className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold transition-opacity disabled:opacity-50"
-                style={{ background: 'var(--c-gold)', color: 'var(--c-bg)' }}
+                style={{ background: 'var(--c-accent-green)', color: 'var(--c-bg)' }}
               >
                 <HiPlus className="w-4 h-4" />
                 {addingToAllowlist ? '...' : 'Adicionar'}
@@ -421,8 +421,8 @@ export default function AdminDashboard() {
                   <span
                     className="text-xs font-semibold px-2 py-0.5 rounded-full flex-shrink-0"
                     style={{
-                      color: entry.role === 'teacher' ? 'var(--c-purple)' : 'var(--c-info)',
-                      background: entry.role === 'teacher' ? 'var(--c-purple-soft)' : 'var(--c-info-soft)',
+                      color: entry.role === 'teacher' ? 'var(--c-accent-blue)' : 'var(--c-info)',
+                      background: entry.role === 'teacher' ? 'var(--c-accent-blue-soft)' : 'var(--c-info-soft)',
                     }}
                   >
                     {entry.role === 'teacher' ? 'Professor' : 'Aluno'}

@@ -66,7 +66,7 @@ export default function TurmasPage() {
           <Link
             href="/dashboard/admin/turmas/nova"
             className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-colors"
-            style={{ background: 'var(--c-gold)', color: 'var(--c-bg)' }}
+            style={{ background: 'var(--c-accent-green)', color: 'var(--c-bg)' }}
           >
             <HiPlus className="w-4 h-4" />
             Nova turma
@@ -84,7 +84,7 @@ export default function TurmasPage() {
             <Link
               href="/dashboard/admin/turmas/nova"
               className="px-4 py-2 rounded-xl text-sm font-semibold"
-              style={{ background: 'var(--c-gold)', color: 'var(--c-bg)' }}
+              style={{ background: 'var(--c-accent-green)', color: 'var(--c-bg)' }}
             >
               Criar primeira turma
             </Link>

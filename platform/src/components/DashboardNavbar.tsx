@@ -7,6 +7,7 @@ import { signOut } from '@/lib/auth-helpers'
 import { useAuth } from '@/hooks/useAuth'
 import { useTheme } from '@/context/ThemeContext'
 import { ProfileModal } from '@/components/ProfileModal'
+import { Logo } from '@/components/Logo'
 import { HiOutlineSun, HiOutlineMoon, HiArrowRightOnRectangle } from 'react-icons/hi2'
 
 const ROLE_TITLES: Record<string, string> = {
@@ -51,14 +52,8 @@ export function DashboardNavbar({ title: titleProp }: Props) {
     >
       {/* Left: logo + role title */}
       <div className="flex items-center gap-3 min-w-0">
-        <a
-          href={LANDING_URL}
-          className="flex-shrink-0 text-2xl font-extrabold tracking-normal leading-none"
-          style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
-        >
-          <span className="logo-gradient">Catadores</span>
-          {' '}
-          <span style={{ color: 'var(--c-text)' }}>Digitais</span>
+        <a href={LANDING_URL} className="flex-shrink-0">
+          <Logo size="sm" />
         </a>
 
         <span className="w-px h-6 flex-shrink-0" style={{ background: 'var(--c-border-md)' }} />

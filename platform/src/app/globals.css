@@ -1,20 +1,21 @@
-@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Inter:wght@500;600;700;800&display=swap');
 @import "tailwindcss";
 
 :root {
-  --c-bg:           #06030F;
-  --c-bg-alt:       #0F0A1E;
-  --c-text:         #F8F4FF;
-  --c-muted:        #C5B7D8;
-  --c-subtle:       #9B8CB8;
-  --c-faint:        #614E7B;
+  --c-bg:           #03060F;
+  --c-bg-alt:       #0A0F1E;
+  --c-text:         #F4F7FF;
+  --c-muted:        #B7C0D8;
+  --c-subtle:       #8C97B8;
+  --c-faint:        #4E5A7B;
   --c-border:       rgba(255,255,255,0.10);
   --c-border-md:    rgba(255,255,255,0.18);
-  --c-accent-yellow: #FFC530;
-  --c-accent-coral:  #FF8055;
-  --logo-c1:        #FFC530;
-  --logo-c2:        #FF6B35;
-  --logo-c3:        #A855F7;
+  --c-accent-green: #CFF183;   /* 16.1:1 ✓ — brand green, dark-bg variant from the logo asset */
+  --c-accent-green-soft: rgba(131,184,13,0.10);
+  --c-accent-green-strong: rgba(131,184,13,0.45);
+  --c-accent-blue:  #84A4FF;   /*  8.5:1 ✓ — brand blue, dark-bg variant from the logo asset */
+  --c-accent-blue-soft: rgba(17,75,242,0.10);
+  --c-accent-blue-strong: rgba(17,75,242,0.45);
 
   --c-success:        #22c55e;
   --c-success-soft:   rgba(34,197,94,0.10);
@@ -28,19 +29,6 @@
   --c-info:           #06B6D4;
   --c-info-soft:      rgba(6,182,212,0.10);
   --c-info-strong:    rgba(6,182,212,0.45);
-  --c-purple:         #A855F7;
-  --c-purple-soft:    rgba(168,85,247,0.10);
-  --c-purple-strong:  rgba(168,85,247,0.45);
-  --c-gold:           #FFC530;
-  --c-gold-soft:      rgba(255,197,48,0.10);
-  --c-gold-strong:    rgba(255,197,48,0.45);
-}
-
-.logo-gradient {
-  background: linear-gradient(135deg, var(--logo-c1) 0%, var(--logo-c2) 60%, var(--logo-c3) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 body {

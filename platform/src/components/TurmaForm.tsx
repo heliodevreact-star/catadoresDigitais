@@ -241,7 +241,7 @@ export function TurmaForm({ mode, turmaId, initialData, archived: initialArchive
             type="submit"
             disabled={saving}
             className="w-full py-3.5 rounded-2xl text-sm font-bold transition-opacity disabled:opacity-50"
-            style={{ background: 'var(--c-gold)', color: 'var(--c-bg)' }}
+            style={{ background: 'var(--c-accent-green)', color: 'var(--c-bg)' }}
           >
             {submitLabel}
           </button>

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { getIdToken } from 'firebase/auth'
 import { auth } from '@/lib/firebase'
 import { signInWithGoogle } from '@/lib/auth-helpers'
+import { Logo } from '@/components/Logo'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -42,9 +43,9 @@ export default function LoginPage() {
   return (
     <main className="min-h-screen flex items-center justify-center" style={{ background: 'var(--c-bg)' }}>
       <div className="w-full max-w-sm p-8 rounded-2xl flex flex-col items-center gap-6 border" style={{ background: 'var(--c-bg-alt)', borderColor: 'var(--c-border)' }}>
-        <div className="flex flex-col items-center gap-2 text-center">
-          <h1 className="text-2xl font-bold" style={{ color: 'var(--c-text)' }}>Catadores Digitais</h1>
-          <p className="text-sm" style={{ color: 'var(--c-subtle)' }}>Faça login para acessar a plataforma</p>
+        <div className="flex flex-col items-center gap-3 text-center">
+          <Logo size="lg" showTagline />
+          <p className="text-sm mt-1" style={{ color: 'var(--c-subtle)' }}>Faça login para acessar a plataforma</p>
         </div>
 
         {error && (

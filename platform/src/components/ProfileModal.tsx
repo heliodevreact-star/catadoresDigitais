@@ -67,8 +67,8 @@ export function ProfileModal({ user, onClose, onSaved }: Props) {
         <div className="flex items-start justify-between p-5 border-b" style={{ borderColor: 'var(--c-border)' }}>
           <div className="flex-1 min-w-0 pr-3">
             <div className="flex items-center gap-2 mb-1">
-              <HiUser className="w-4 h-4 flex-shrink-0" style={{ color: 'var(--c-gold)' }} />
-              <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--c-gold)' }}>
+              <HiUser className="w-4 h-4 flex-shrink-0" style={{ color: 'var(--c-accent-green)' }} />
+              <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--c-accent-green)' }}>
                 Meu perfil
               </span>
             </div>
@@ -144,7 +144,7 @@ export function ProfileModal({ user, onClose, onSaved }: Props) {
               onClick={handleSave}
               disabled={saving}
               className="flex-1 py-2.5 rounded-xl text-sm font-bold transition-opacity disabled:opacity-50"
-              style={{ background: 'var(--c-gold)', color: 'var(--c-bg)' }}
+              style={{ background: 'var(--c-accent-green)', color: 'var(--c-bg)' }}
             >
               {saving ? 'Salvando...' : 'Salvar'}
             </button>
