@@ -21,16 +21,17 @@
 - Footer com navegação e tagline
 - Tema dark/light persistido
 - Responsividade mobile com menu hambúrguer
+- Formulário de inscrição ("Seja o primeiro a saber") grava direto no Firestore (`leads/{id}`, client SDK) — honeypot anti-bot, validação de email client + Firestore Rules, admin vê a lista em `/dashboard/admin/leads`
+- Deploy em produção — domínio próprio `catadoresdigitais.com.br` (Vercel)
 
 ### Pendente ❌
-- Formulário de inscrição funcional (atualmente é "Em breve")
-- Integração com backend para captura de leads
 - SEO: meta tags, Open Graph, sitemap
-- Deploy em produção
 
 ---
 
 ## Platform
+
+> Deploy em produção na Vercel, hoje na URL provisória do projeto (ex: `catadores-digitais-hnt6.vercel.app`) — ainda não migrado para o domínio final `www.catadoresdigitais.com.br/plataforma` (path-based routing, a configurar). Domínio precisa estar em Firebase Console → Authentication → Authorized domains pro login com Google funcionar (ver `platform/README.md`).
 
 ### Autenticação
 | Feature | Status |
@@ -70,6 +71,7 @@
 | UserDetailPanel (slide-over de detalhes do usuário) | ✅ |
 | UserDetailPanel: adicionar / remover de turmas (aluno e professor) | ✅ |
 | UserDetailPanel: editar nome do usuário (inline, salvo no Firestore) | ✅ |
+| Interessados da landing (`/dashboard/admin/leads`) — lista de emails capturados pelo formulário, com remoção | ✅ |
 
 ---
 
@@ -87,12 +89,13 @@
 ### Painel do Aluno
 | Feature | Status |
 |---------|--------|
-| Stats: aulas esta semana, próximas aulas, frequência (%) | ✅ |
+| Stats: aulas esta semana (contagem), próximas aulas (data das até 3 mais próximas, não mais contagem), frequência (%) | ✅ |
 | Aviso de frequência baixa (< 85%) | ✅ |
 | Minha turma com barra de progresso temporal | ✅ |
 | Próximas aulas agrupadas por data com tag da turma e professor | ✅ |
 | Link direto para página da aula (`/dashboard/aula/[turmaId]/[aulaId]`) | ✅ |
 | Clique em qualquer AulaCard dentro da turma (passada ou futura) navega para a página da aula | ✅ |
+| Aba **Conquistas** (dentro do painel da turma) — diplomas já conquistados (link pro PDF/verificação) e marcos "em andamento" (selecionado, ainda não emitido) | ✅ |
 
 ---
 
@@ -195,6 +198,27 @@
 
 ---
 
+### Diplomas
+Diplomas não são só de conclusão final — admin/professor cria **marcos** (`turmas/{id}/diplomas/{id}`) em qualquer ponto do curso (ex: 3 mini-diplomas dentro de uma turma grande), cada um com título, descrição opcional, data alcançada, carga horária e uma lista de alunos manualmente selecionados. Emitir (aba Diplomas, admin/professor) é uma ação separada de criar o marco — gera um doc imutável por aluno em `diplomasEmitidos/{id}` (snapshot dos dados no momento da emissão, inclusive nome/assinatura do coordenador — não muda retroativamente se a turma for editada depois).
+
+| Feature | Status |
+|---------|--------|
+| Aba **Diplomas** no painel da turma (admin/professor) | ✅ |
+| Coordenador geral (nome + assinatura) configurável por turma, admin-only | ✅ |
+| Upload de assinatura — redimensionada no client (canvas), guardada como PNG base64 no doc da turma (sem Firebase Storage) | ✅ |
+| Criar marco: título, descrição opcional, data (dentro do período da turma), carga horária em horas, seleção manual de alunos | ✅ |
+| Editar marco existente (inclusive pra preencher `hours` em marcos criados antes desse campo existir) | ✅ |
+| Apagar marco (admin-only) — não apaga diplomas já emitidos | ✅ |
+| Emitir diplomas pros alunos selecionados — CPF ausente no perfil é pedido inline na hora de emitir (gravado só no diploma, não no perfil) | ✅ |
+| Dedupe — reemitir pro mesmo aluno no mesmo marco não duplica | ✅ |
+| PDF do diploma (`@react-pdf/renderer`, paisagem A4): logo Ipês + logo Caixa (`caixa_fsa_light.png`), título, nome do aluno, CPF, carga horária, data e nome da turma em negrito, assinatura do coordenador, QR code | ✅ |
+| Página pública de verificação `/diploma/[id]` (Server Component, sem login) — mostra os mesmos dados + botão de baixar o PDF | ✅ |
+| QR aponta pra `{origin}/diploma/{id}` — `origin` vem de `NEXT_PUBLIC_SITE_URL` se definida, senão do host da própria requisição. PDFs já baixados guardam a URL de quando foram gerados; setar essa env var quando o domínio final estiver pronto só afeta PDFs gerados dali pra frente | ✅ |
+| Aba **Conquistas** (aluno, dentro do painel da turma) — diplomas conquistados (com link) e marcos em andamento | ✅ |
+| Listagem "meus diplomas" cross-turma no dashboard principal do aluno | ❌ (fora de escopo por ora — o link público já cobre o acesso) |
+
+---
+
 ## Rotas API (plataforma)
 
 | Rota | Método | Acesso |
@@ -203,6 +227,8 @@
 | `/api/auth/enroll` | POST | usuário autenticado (self, matrícula automática no 1º login) |
 | `/api/admin/allowlist` | GET, POST | admin |
 | `/api/admin/allowlist/[email]` | DELETE | admin |
+| `/api/admin/leads` | GET | admin |
+| `/api/admin/leads/[id]` | DELETE | admin |
 | `/api/admin/upcoming-aulas` | GET | admin/teacher |
 | `/api/admin/users` | GET | admin |
 | `/api/admin/users/[uid]` | PATCH, DELETE | admin |
@@ -221,7 +247,13 @@
 | `/api/turmas/[id]/banco` | GET, POST | editor |
 | `/api/turmas/[id]/banco/[bancoId]` | GET, PATCH, DELETE | editor |
 | `/api/turmas/[id]/banco/[bancoId]/agendar` | POST | editor |
-| `/api/turmas/[id]/students` | GET | editor |
+| `/api/turmas/[id]/students` | GET | editor (retorna `{ email, name, cpf }[]`) |
+| `/api/turmas/[id]/diplomas` | GET, POST | any (GET) / editor (POST) |
+| `/api/turmas/[id]/diplomas/[milestoneId]` | GET, PATCH, DELETE | any (GET) / editor (PATCH) / admin (DELETE) |
+| `/api/turmas/[id]/diplomas/[milestoneId]/issue` | POST | editor |
+| `/api/turmas/[id]/diplomas/[milestoneId]/issued` | GET | editor |
+| `/api/turmas/[id]/diplomas/mine` | GET | any (retorna só os diplomas do próprio usuário) |
+| `/api/diplomas/[id]/pdf` | GET | público (URL de capacidade — ID aleatório do Firestore) |
 | `/api/users/teachers` | GET | editor |
 | `/api/admin/turmas/[id]/relatorio` | GET | admin |
 
@@ -229,17 +261,21 @@
 
 ## Schema Firestore
 
-- `users/{uid}` — `{ uid, email, name, photoURL, role, createdAt }`
+- `users/{uid}` — `{ uid, email, name, photoURL, role, createdAt, phone?, cpf?, birthDate? }`
 - `allowlist/{email}` — `{ email, role, turmaId, createdAt }`
-- `turmas/{id}` — `{ name, icon, iconColor, startDate, endDate, students: string[], professors?: TurmaTeacher[], createdBy, createdAt }`
+- `leads/{id}` — `{ email, source, createdAt }` (`source: 'landing'`) — criação pública via Firestore Rules (client SDK da `/landing`, projeto separado); leitura só via Admin SDK
+- `turmas/{id}` — `{ name, icon, iconColor, startDate, endDate, students: string[], professors?: TurmaTeacher[], createdBy, createdAt, coordinatorName?, coordinatorSignature? }` (`coordinatorSignature` é um data URI PNG base64, direto no doc)
 - `turmas/{id}/aulas/{id}` — `{ title, description, date, startTime, endTime, status, teachers: AulaTeacher[], driveLinks: Material[], attendance: { [email]: 'present'|'absent'|'late'|null }, attendanceCode?, avaliacoes?, bancoAulaId?, createdAt }` onde `Material = { id?, type?: 'link'|'text', label, url?, content? }`
 - `turmas/{id}/aulas/{id}/respostas/{email}` — `{ studentEmail, studentName, answers: Record<avaliacaoId, string>, submittedAt }`
 - `turmas/{id}/banco/{id}` — `{ title, description, teachers: AulaTeacher[], driveLinks, avaliacoes?, createdBy, createdAt }`
+- `turmas/{id}/diplomas/{id}` — marco/template: `{ title, description?, achievedDate, hours, recipientEmails: string[], issuedEmails: string[], createdBy, createdAt }`
+- `diplomasEmitidos/{id}` (top-level, não subcoleção) — diploma emitido, imutável: `{ turmaId, turmaName, milestoneId, title, description?, achievedDate, hours, studentEmail, studentName, studentCpf, coordinatorName, coordinatorSignature, issuedBy, issuedAt }` — leitura/escrita só via Admin SDK (a página pública `/diploma/[id]` e a rota do PDF rodam server-side, então não precisam de regra pública)
 
 ---
 
 ## Prioridades sugeridas
 
 1. **Gerenciar matrículas na tela de edição da turma** — adicionar / remover alunos e professores direto na turma (hoje só dá pra fazer pelo perfil do usuário)
-2. **Formulário de inscrição** da landing page
-3. **Deploy** — landing + platform em produção
+2. **Path-based routing do `/platform`** — migrar de URL provisória da Vercel pra `www.catadoresdigitais.com.br/plataforma`, e depois adicionar esse domínio em Firebase Authorized domains
+3. **Preencher `hours` nos marcos de diploma criados antes desse campo existir** (pelo menos 2 marcos e 1 diploma já emitido na "Turma Teste 2" ficaram sem carga horária — editável pela aba Diplomas, exceto o diploma já emitido, que é imutável)
+4. **Editar CPF de outro usuário** via admin (hoje só existe autoedição do próprio perfil — a emissão de diploma contorna isso pedindo o CPF inline na hora, mas não atualiza o cadastro)
