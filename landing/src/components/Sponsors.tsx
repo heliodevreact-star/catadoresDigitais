@@ -84,7 +84,7 @@ export function Sponsors() {
           {/* Column 2 — Apoio financeiro / Caixa */}
           <motion.div variants={cardVariants} className="flex flex-col items-center gap-3">
             <span className="font-dm font-light text-sm tracking-[0.2em] uppercase text-[var(--c-subtle)]">
-              Apoio financeiro
+              Apoiador financeiro
             </span>
             <div
               className="w-full rounded-3xl p-8 min-h-[180px] flex items-center justify-center"
