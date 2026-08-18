@@ -45,59 +45,63 @@ export function Sponsors() {
           </div>
         </motion.div>
 
+        <motion.p
+          initial={{ opacity: 0, y: 16 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="font-dm text-[var(--c-muted)] leading-relaxed text-center max-w-xl mx-auto mb-10"
+        >
+          O projeto Catadores Digitais existe graças ao compromisso de organizações
+          que acreditam no potencial transformador da educação tecnológica.
+        </motion.p>
+
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate={inView ? 'visible' : 'hidden'}
-          className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6"
+          className="grid grid-cols-1 md:grid-cols-[2fr_3fr] gap-5 md:gap-6"
         >
-          {/* Box 1 — Realização / Instituto Ipês, tall left column */}
-          <motion.div
-            variants={cardVariants}
-            className="md:row-span-2 rounded-3xl p-8 md:p-9 flex flex-col justify-center items-center text-center bg-gradient-to-br from-[#83B80D]/10 to-transparent glass-card"
-            style={{ borderColor: 'rgba(131,184,13,0.2)' }}
-          >
-            <a href="https://institutoipes.org.br/" target="_blank" rel="noopener noreferrer">
-              <img
-                src="/ipes-logo.webp"
-                alt="Instituto Ipês"
-                className="h-28 w-auto object-contain"
-                style={{ filter: isDark ? 'brightness(1.1) drop-shadow(0 0 12px rgba(255,255,255,0.08))' : 'none' }}
-              />
-            </a>
-          </motion.div>
-
-          {/* Box 2 — intro text */}
-          <motion.div
-            variants={cardVariants}
-            className="md:col-span-2 rounded-3xl p-8 glass-card flex flex-col justify-center"
-          >
-            <h2 className="font-syne font-extrabold text-3xl md:text-4xl text-[var(--c-text)] mb-3 leading-tight">
+          {/* Column 1 — Realização / Instituto Ipês */}
+          <motion.div variants={cardVariants} className="flex flex-col items-center gap-3">
+            <span className="font-dm font-light text-sm tracking-[0.2em] uppercase text-[var(--c-subtle)]">
               Realização
-            </h2>
-            <p className="font-dm text-[var(--c-muted)] leading-relaxed max-w-lg">
-              O projeto Catadores Digitais existe graças ao compromisso de organizações
-              que acreditam no potencial transformador da educação tecnológica.
-            </p>
+            </span>
+            <div
+              className="w-full rounded-3xl p-8 min-h-[180px] flex items-center justify-center bg-gradient-to-br from-[#83B80D]/10 to-transparent glass-card"
+              style={{ borderColor: 'rgba(131,184,13,0.2)' }}
+            >
+              <a href="https://institutoipes.org.br/" target="_blank" rel="noopener noreferrer">
+                <img
+                  src="/ipes-logo.webp"
+                  alt="Instituto Ipês"
+                  className="h-24 w-auto object-contain"
+                  style={{ filter: isDark ? 'brightness(1.1) drop-shadow(0 0 12px rgba(255,255,255,0.08))' : 'none' }}
+                />
+              </a>
+            </div>
           </motion.div>
 
-          {/* Box 3 — Patrocínio / Caixa */}
-          <motion.div
-            variants={cardVariants}
-            className="md:col-span-2 rounded-3xl p-8 flex flex-wrap items-center justify-center gap-6"
-            style={{ background: '#003087', border: '1px solid rgba(255,255,255,0.1)' }}
-          >
-            <a
-              href="https://www.caixa.gov.br/sustentabilidade/fundo-socioambiental-caixa/"
-              target="_blank"
-              rel="noopener noreferrer"
+          {/* Column 2 — Apoio financeiro / Caixa */}
+          <motion.div variants={cardVariants} className="flex flex-col items-center gap-3">
+            <span className="font-dm font-light text-sm tracking-[0.2em] uppercase text-[var(--c-subtle)]">
+              Apoio financeiro
+            </span>
+            <div
+              className="w-full rounded-3xl p-8 min-h-[180px] flex items-center justify-center"
+              style={{ background: '#003087', border: '1px solid rgba(255,255,255,0.1)' }}
             >
-              <img
-                src="/fsc_negativa_chapada.png"
-                alt="Caixa Econômica Federal"
-                className="h-12 md:h-14 w-auto object-contain"
-              />
-            </a>
+              <a
+                href="https://www.caixa.gov.br/sustentabilidade/fundo-socioambiental-caixa/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img
+                  src="/fsc_negativa_chapada.png"
+                  alt="Caixa Econômica Federal"
+                  className="h-12 md:h-14 w-auto object-contain"
+                />
+              </a>
+            </div>
           </motion.div>
         </motion.div>
       </div>
