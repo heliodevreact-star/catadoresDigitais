@@ -9,8 +9,8 @@ export function Home() {
     <>
       <Hero />
       <Marquee />
-      <Courses />
       <ComingSoon />
+      <Courses />
       <Sponsors />
     </>
   );

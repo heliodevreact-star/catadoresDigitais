@@ -1,13 +1,105 @@
-import { motion, useInView, AnimatePresence } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 import { useRef, useState } from 'react';
-import { HiOutlineMapPin, HiOutlineUserGroup, HiOutlineCalendar, HiCheckCircle } from 'react-icons/hi2';
+import { HiOutlineMapPin, HiOutlineUserGroup, HiOutlineArrowTopRightOnSquare, HiOutlineClock } from 'react-icons/hi2';
 import { HiSparkles } from 'react-icons/hi';
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { useTheme } from '../context/ThemeContext';
-import { db } from '../lib/firebase';
 
-const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-const EMAIL_MAX_LENGTH = 254;
+type Sessao = {
+  id: string;
+  tipo: 'Curso' | 'Oficina';
+  icon: string;
+  titulo: string;
+  dataLabel: string;
+  dias: number[];
+  periodo: 'Tarde' | 'Manhã';
+  periodoIcon: string;
+  color: string;
+  link: string;
+};
+
+const sessoes: Sessao[] = [
+  {
+    id: 'curso-1',
+    tipo: 'Curso',
+    icon: '📘',
+    titulo: 'Curso de Letramento Digital',
+    dataLabel: '16 a 19',
+    dias: [16, 17, 18, 19],
+    periodo: 'Tarde',
+    periodoIcon: '☀️',
+    color: '#114BF2',
+    link: 'https://forms.gle/f69ML5n6YM53G2UAA',
+  },
+  {
+    id: 'oficina-1',
+    tipo: 'Oficina',
+    icon: '⚡',
+    titulo: 'Oficina de Letramento Digital',
+    dataLabel: '19',
+    dias: [19],
+    periodo: 'Manhã',
+    periodoIcon: '🌅',
+    color: '#4D1BBB',
+    link: 'https://forms.gle/YSCudAYeDVrDdaP38',
+  },
+  {
+    id: 'curso-2',
+    tipo: 'Curso',
+    icon: '📘',
+    titulo: 'Curso de Letramento Digital',
+    dataLabel: '23 a 27',
+    dias: [23, 24, 25, 26, 27],
+    periodo: 'Manhã',
+    periodoIcon: '🌅',
+    color: '#83B80D',
+    link: 'https://forms.gle/Vfofzr1nASUfaf898',
+  },
+  {
+    id: 'oficina-2',
+    tipo: 'Oficina',
+    icon: '⚡',
+    titulo: 'Oficina de Letramento Digital',
+    dataLabel: '27',
+    dias: [27],
+    periodo: 'Tarde',
+    periodoIcon: '☀️',
+    color: '#4D1BBB',
+    link: 'https://forms.gle/r7M1Luoj8wbTe1Ei6',
+  },
+];
+
+// Novembro/2026 começa num domingo — grade usada para o mini-calendário visual.
+const DIAS_SEMANA_ABREV = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
+const DIAS_SEMANA_NOME = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+
+type Celula = { dia: number; mes: 'nov' | 'dez' };
+const CELULAS_CALENDARIO: Celula[] = [
+  ...Array.from({ length: 30 }, (_, i) => ({ dia: i + 1, mes: 'nov' as const })),
+  ...Array.from({ length: 5 }, (_, i) => ({ dia: i + 1, mes: 'dez' as const })),
+];
+
+type DiaInfo = { bg: string; color: string; emojis: string[]; tooltip: string };
+
+function construirDiaInfo(lista: Sessao[]): Record<number, DiaInfo> {
+  const mapa: Record<number, DiaInfo> = {};
+  for (const s of lista) {
+    for (const d of s.dias) {
+      if (!mapa[d]) mapa[d] = { bg: `${s.color}20`, color: s.color, emojis: [], tooltip: '' };
+      mapa[d].emojis.push(s.periodoIcon);
+      const linha = `${s.periodoIcon} ${s.titulo} — ${s.periodo}`;
+      mapa[d].tooltip = mapa[d].tooltip ? `${mapa[d].tooltip}\n${linha}` : linha;
+    }
+  }
+  return mapa;
+}
+
+const DIA_INFO = construirDiaInfo(sessoes);
+
+const FERIADOS: Record<number, string> = {
+  2: 'Finados',
+  15: 'Proclamação da República',
+  20: 'Consciência Negra',
+};
 
 const priorities = [
   {
@@ -33,46 +125,26 @@ const priorities = [
   },
 ];
 
+type TooltipState = { text: string; top: number; left: number; accent: string };
+
 export function ComingSoon() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
   const { isDark } = useTheme();
-  const [email, setEmail] = useState('');
-  const [honeypot, setHoneypot] = useState('');
-  const [submitted, setSubmitted] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const calendarRef = useRef<HTMLDivElement>(null);
+  const [tooltip, setTooltip] = useState<TooltipState | null>(null);
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-
-    // Campo isca: bots costumam preencher todos os campos, humanos não veem este.
-    if (honeypot) {
-      setSubmitted(true);
-      return;
-    }
-
-    const trimmed = email.trim().toLowerCase();
-    if (trimmed.length > EMAIL_MAX_LENGTH || !EMAIL_REGEX.test(trimmed)) {
-      setError('Digite um email válido.');
-      return;
-    }
-
-    setError(null);
-    setSubmitting(true);
-    try {
-      await addDoc(collection(db, 'leads'), {
-        email: trimmed,
-        source: 'landing',
-        createdAt: serverTimestamp(),
-      });
-      setSubmitted(true);
-    } catch (err) {
-      console.error('Falha ao registrar lead:', err);
-      setError('Não foi possível enviar agora. Tente novamente em instantes.');
-    } finally {
-      setSubmitting(false);
-    }
+  function showTooltip(e: React.MouseEvent<HTMLDivElement>, text: string, accent: string) {
+    const cardEl = calendarRef.current;
+    if (!cardEl) return;
+    const cellRect = e.currentTarget.getBoundingClientRect();
+    const cardRect = cardEl.getBoundingClientRect();
+    setTooltip({
+      text,
+      top: cellRect.top - cardRect.top,
+      left: cellRect.left - cardRect.left + cellRect.width / 2,
+      accent,
+    });
   }
 
   return (
@@ -103,7 +175,7 @@ export function ComingSoon() {
             <motion.div animate={{ rotate: 360 }} transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}>
               <HiSparkles className="w-4 h-4" />
             </motion.div>
-            <span className="font-syne font-bold text-sm tracking-wide uppercase">Em breve</span>
+            <span className="font-syne font-bold text-sm tracking-wide uppercase">inscrições</span>
           </div>
         </motion.div>
 
@@ -115,7 +187,7 @@ export function ComingSoon() {
           className="font-syne font-extrabold text-4xl md:text-5xl lg:text-6xl text-[var(--c-text)] text-center mb-6 leading-tight"
         >
           As inscrições estão{' '}
-          <span className="text-[var(--c-accent-blue)]">chegando.</span>
+          <span className="text-[var(--c-accent-blue)]">abertas!</span>
         </motion.h2>
 
         <motion.p
@@ -124,12 +196,193 @@ export function ComingSoon() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="font-dm text-lg md:text-xl text-[var(--c-muted)] text-center max-w-2xl mx-auto mb-14 leading-relaxed"
         >
-          Estamos preparando as turmas. Em breve você poderá se inscrever nas
-          formações gratuitas de tecnologia — e algumas vagas são prioritárias para
-          quem mais precisa dessas oportunidades.
+          As inscrições para os cursos de letramento digital de novembro já estão
+          abertas — veja as datas e inscreva-se abaixo. Em breve, abrimos turmas de
+          montagem e configuração de computadores também.
         </motion.p>
 
+        {/* Curso x Oficina */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.25 }}
+          className="mb-10"
+        >
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-8 text-center mb-3">
+            <span className="flex items-center gap-2 font-dm text-sm md:text-base text-[var(--c-text)]">
+              <span className="text-xl">📘</span>
+              <span><strong className="font-syne">Curso:</strong> mais prática, com professor</span>
+            </span>
+            <span className="flex items-center gap-2 font-dm text-sm md:text-base text-[var(--c-text)]">
+              <span className="text-xl">⚡</span>
+              <span><strong className="font-syne">Oficina:</strong> mesmo conteúdo, 1 dia só</span>
+            </span>
+          </div>
+          <p className="font-dm text-sm text-[var(--c-subtle)] text-center max-w-xl mx-auto">
+            Os dois ensinam o mesmo conteúdo e valem a pena — escolha o que encaixa melhor na sua rotina.
+          </p>
+        </motion.div>
+
+        {/* Cards de inscrição */}
+        <h3 className="font-syne font-bold text-sm tracking-wide uppercase text-[var(--c-subtle)] text-center mb-5">
+          👇 Escolha sua turma
+        </h3>
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7, delay: 0.3 }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-14"
+        >
+          {sessoes.map((s, i) => (
+            <motion.a
+              key={s.id}
+              href={s.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Inscreva-se: ${s.titulo}, ${s.dataLabel} de novembro, período da ${s.periodo.toLowerCase()}`}
+              initial={{ opacity: 0, y: 20 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              whileHover={{ y: -4 }}
+              transition={{ duration: 0.5, delay: 0.35 + i * 0.08 }}
+              className="glass-card rounded-2xl p-6 text-center flex flex-col"
+              style={{ borderColor: `${s.color}30` }}
+            >
+              <div
+                className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl"
+                style={{ background: `${s.color}15` }}
+              >
+                {s.icon}
+              </div>
+              <span className="font-syne font-bold text-xs tracking-wide uppercase mb-1" style={{ color: s.color }}>
+                {s.tipo}
+              </span>
+              <h4 className="font-syne font-bold text-base text-[var(--c-text)] mb-3 leading-snug">
+                {s.titulo}
+              </h4>
+              <div className="font-syne font-extrabold text-3xl text-[var(--c-text)] mb-1">
+                {s.dataLabel}
+              </div>
+              <div className="font-dm text-xs text-[var(--c-subtle)] mb-4">NOV</div>
+              <div className="font-dm text-sm text-[var(--c-muted)] mb-5 flex items-center justify-center gap-1.5">
+                <span>{s.periodoIcon}</span> {s.periodo}
+              </div>
+              <div
+                className="mt-auto font-syne font-bold text-sm text-white px-4 py-3 rounded-xl flex items-center justify-center gap-2 transition-opacity hover:opacity-90"
+                style={{ background: s.color }}
+              >
+                Inscreva-se <HiOutlineArrowTopRightOnSquare className="w-4 h-4" />
+              </div>
+            </motion.a>
+          ))}
+        </motion.div>
+
+        {/* Mini-calendário visual */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7, delay: 0.4 }}
+          className="glass-card rounded-3xl p-6 md:p-8 mb-14"
+        >
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
+            <h3 className="font-syne font-extrabold text-xl md:text-2xl text-[var(--c-text)]">
+              🗓️ Novembro
+            </h3>
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[var(--c-input-bg)] border border-[var(--c-border)]">
+              <HiOutlineClock className="w-4 h-4 text-[var(--c-subtle)]" />
+              <span className="font-dm text-xs text-[var(--c-subtle)]">
+                Horários exatos em breve
+              </span>
+            </div>
+          </div>
+
+          <div ref={calendarRef} className="relative">
+            <div className="rounded-2xl overflow-hidden border border-[var(--c-border)] mb-6">
+              <div className="grid grid-cols-7 bg-[var(--c-input-bg)]">
+                {DIAS_SEMANA_NOME.map((nome, i) => (
+                  <div
+                    key={i}
+                    className="text-center font-syne font-bold text-[10px] sm:text-sm text-[var(--c-subtle)] py-2 px-0.5 truncate"
+                  >
+                    <span className="hidden sm:inline">{nome}</span>
+                    <span className="sm:hidden">{DIAS_SEMANA_ABREV[i]}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="grid grid-cols-7 divide-x divide-y divide-[var(--c-border)] border-t border-[var(--c-border)]">
+                {CELULAS_CALENDARIO.map((cel, i) => {
+                  const isDez = cel.mes === 'dez';
+                  const info = !isDez ? DIA_INFO[cel.dia] : undefined;
+                  const feriado = !isDez ? FERIADOS[cel.dia] : undefined;
+                  const texto = isDez
+                    ? 'Muito em breve...'
+                    : (info?.tooltip ?? (feriado ? `🎉 Feriado — ${feriado}` : undefined));
+                  const accent = info?.color ?? (feriado ? '#4D1BBB' : 'var(--c-subtle)');
+                  return (
+                    <div
+                      key={i}
+                      className="aspect-square flex flex-col items-center justify-center gap-0.5"
+                      style={{ background: info?.bg ?? 'transparent', opacity: isDez ? 0.35 : 1 }}
+                      onMouseEnter={texto ? (e) => showTooltip(e, texto, accent) : undefined}
+                      onMouseLeave={texto ? () => setTooltip(null) : undefined}
+                    >
+                      <span
+                        className="font-dm text-xs sm:text-sm leading-none"
+                        style={{
+                          color: info ? 'var(--c-text)' : feriado || isDez ? 'var(--c-subtle)' : 'var(--c-muted)',
+                          fontWeight: info ? 700 : 400,
+                        }}
+                      >
+                        {cel.dia}
+                      </span>
+                      {info && (
+                        <span className="text-[9px] sm:text-xs leading-none">{info.emojis.join(' ')}</span>
+                      )}
+                      {!info && feriado && <span className="text-[9px] sm:text-xs leading-none">🎉</span>}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {tooltip && (
+              <div
+                className="absolute z-50 pointer-events-none px-3 py-2 rounded-lg shadow-lg text-xs font-dm leading-snug whitespace-pre-line text-left text-white"
+                style={{
+                  top: tooltip.top,
+                  left: tooltip.left,
+                  transform: 'translate(-50%, calc(-100% - 10px))',
+                  background: '#17122B',
+                  borderLeft: `3px solid ${tooltip.accent}`,
+                  maxWidth: 220,
+                }}
+              >
+                {tooltip.text}
+              </div>
+            )}
+          </div>
+
+          <div className="flex flex-wrap gap-x-5 gap-y-2 justify-center font-dm text-xs sm:text-sm text-[var(--c-muted)] mb-3">
+            <span className="flex items-center gap-1.5">
+              <span className="w-3 h-3 rounded-full" style={{ background: '#114BF2' }} /> ☀️ Curso — tarde
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="w-3 h-3 rounded-full" style={{ background: '#83B80D' }} /> 🌅 Curso — manhã
+            </span>
+            <span className="flex items-center gap-1.5">⚡ Oficina (mesmo conteúdo, só 1 dia)</span>
+            <span className="flex items-center gap-1.5">🎉 Feriado (sem aula)</span>
+          </div>
+          <p className="font-dm text-xs text-[var(--c-subtle)] text-center">
+            Feriados de novembro: dia 2 (Finados), 15 (Proclamação da República) e 20 (Consciência Negra).
+          </p>
+        </motion.div>
+
         {/* Priority cards */}
+        <h3 className="font-syne font-bold text-xl md:text-2xl text-[var(--c-text)] text-center mb-3">
+          🎯 Prioridade garantida
+        </h3>
+        <p className="font-dm text-base text-[var(--c-muted)] text-center max-w-2xl mx-auto mb-8">
+          As inscrições estão abertas pra toda a comunidade. Esses grupos têm vaga garantida nas turmas:
+        </p>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
@@ -160,86 +413,6 @@ export function ComingSoon() {
               </motion.div>
             );
           })}
-        </motion.div>
-
-        {/* Notification CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.55 }}
-          className="relative rounded-3xl p-8 md:p-12 overflow-hidden text-center glass-card"
-          style={{ borderColor: 'rgba(17,75,242,0.2)' }}
-        >
-          <HiOutlineCalendar className="w-10 h-10 text-[var(--c-accent-blue)] mx-auto mb-5" />
-          <h3 className="font-syne font-extrabold text-2xl md:text-3xl text-[var(--c-text)] mb-3">
-            Seja o primeiro a saber
-          </h3>
-          <p className="font-dm text-[var(--c-muted)] max-w-md mx-auto mb-7 leading-relaxed">
-            Deixe seu contato e avisamos assim que as inscrições abrirem. Vagas limitadas
-            — quem chega primeiro garante sua vaga.
-          </p>
-
-          <AnimatePresence mode="wait">
-            {submitted ? (
-              <motion.div
-                key="success"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                className="flex flex-col items-center gap-3"
-              >
-                <HiCheckCircle className="w-10 h-10 text-[var(--c-accent-green)]" />
-                <p className="font-syne font-bold text-xl text-[var(--c-text)]">
-                  Recebemos!
-                </p>
-                <p className="font-dm text-sm text-[var(--c-muted)] max-w-xs text-center">
-                  Assim que as inscrições abrirem, você será um dos primeiros a saber.
-                </p>
-              </motion.div>
-            ) : (
-              <motion.div key="form" initial={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                <form
-                  onSubmit={handleSubmit}
-                  className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
-                >
-                  <input
-                    type="text"
-                    name="hp_confirm_9x2"
-                    value={honeypot}
-                    onChange={(e) => setHoneypot(e.target.value)}
-                    tabIndex={-1}
-                    autoComplete="off"
-                    aria-hidden="true"
-                    style={{ position: 'absolute', left: '-9999px', top: 'auto', width: 1, height: 1, overflow: 'hidden' }}
-                  />
-                  <input
-                    type="email"
-                    inputMode="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    maxLength={EMAIL_MAX_LENGTH}
-                    placeholder="Seu melhor email"
-                    autoComplete="email"
-                    className="flex-1 bg-[var(--c-input-bg)] border border-[var(--c-border)] text-[var(--c-text)] placeholder-[var(--c-subtle)] font-dm text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-brand-blue/50 transition-colors"
-                  />
-                  <button
-                    type="submit"
-                    className="font-syne font-bold text-white px-6 py-3 rounded-xl whitespace-nowrap transition-opacity hover:opacity-90 disabled:opacity-50"
-                    style={{ background: 'linear-gradient(135deg, #517208, #114BF2)' }}
-                    disabled={!email.trim() || submitting}
-                  >
-                    {submitting ? 'Enviando...' : 'Avisar quando abrir'}
-                  </button>
-                </form>
-                {error && (
-                  <p className="font-dm text-xs mt-3" style={{ color: '#FF6B35' }}>{error}</p>
-                )}
-                <p className="font-dm text-xs text-[var(--c-subtle)] mt-4">
-                  Seus dados não serão compartilhados. Apenas um aviso quando as inscrições abrirem.
-                </p>
-              </motion.div>
-            )}
-          </AnimatePresence>
         </motion.div>
       </div>
     </section>
