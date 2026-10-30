@@ -17,6 +17,11 @@ type Sessao = {
   link: string;
 };
 
+const HORARIOS: Record<'Manhã' | 'Tarde', string> = {
+  Manhã: '8h40 às 12h30',
+  Tarde: '13h40 às 17h30',
+};
+
 const sessoes: Sessao[] = [
   {
     id: 'curso-1',
@@ -86,7 +91,7 @@ function construirDiaInfo(lista: Sessao[]): Record<number, DiaInfo> {
     for (const d of s.dias) {
       if (!mapa[d]) mapa[d] = { bg: `${s.color}20`, color: s.color, emojis: [], tooltip: '' };
       mapa[d].emojis.push(s.periodoIcon);
-      const linha = `${s.periodoIcon} ${s.titulo} — ${s.periodo}`;
+      const linha = `${s.periodoIcon} ${s.titulo} — ${s.periodo} (${HORARIOS[s.periodo]})`;
       mapa[d].tooltip = mapa[d].tooltip ? `${mapa[d].tooltip}\n${linha}` : linha;
     }
   }
@@ -211,16 +216,28 @@ export function ComingSoon() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-8 text-center mb-3">
             <span className="flex items-center gap-2 font-dm text-sm md:text-base text-[var(--c-text)]">
               <span className="text-xl">📘</span>
-              <span><strong className="font-syne">Curso:</strong> mais prática, com professor</span>
+              <span><strong className="font-syne">Curso:</strong> mais prática, com atendimento mais individual</span>
             </span>
             <span className="flex items-center gap-2 font-dm text-sm md:text-base text-[var(--c-text)]">
               <span className="text-xl">⚡</span>
-              <span><strong className="font-syne">Oficina:</strong> mesmo conteúdo, 1 dia só</span>
+              <span><strong className="font-syne">Oficina:</strong> tudo em 1 dia, de um jeito mais dinâmico</span>
             </span>
           </div>
-          <p className="font-dm text-sm text-[var(--c-subtle)] text-center max-w-xl mx-auto">
-            Os dois ensinam o mesmo conteúdo e valem a pena — escolha o que encaixa melhor na sua rotina.
+          <p className="font-dm text-sm text-[var(--c-subtle)] text-center max-w-xl mx-auto mb-5">
+            Os dois têm professor e ensinam o mesmo conteúdo — escolha o que encaixa melhor na sua rotina.
           </p>
+
+          <div className="flex justify-center">
+            <a
+              href="https://maps.app.goo.gl/3M9MD3f1if5391Gy9"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--c-input-bg)] border border-[var(--c-border)] font-dm text-sm text-[var(--c-text)] hover:border-brand-blue/50 transition-colors"
+            >
+              📍 As aulas acontecem no <strong className="font-syne">CENTCOOP</strong> — ver no mapa
+              <HiOutlineArrowTopRightOnSquare className="w-3.5 h-3.5" />
+            </a>
+          </div>
         </motion.div>
 
         {/* Cards de inscrição */}
@@ -263,9 +280,10 @@ export function ComingSoon() {
                 {s.dataLabel}
               </div>
               <div className="font-dm text-xs text-[var(--c-subtle)] mb-4">NOV</div>
-              <div className="font-dm text-sm text-[var(--c-muted)] mb-5 flex items-center justify-center gap-1.5">
+              <div className="font-dm text-sm text-[var(--c-muted)] mb-1 flex items-center justify-center gap-1.5">
                 <span>{s.periodoIcon}</span> {s.periodo}
               </div>
+              <div className="font-dm text-xs text-[var(--c-subtle)] mb-5">{HORARIOS[s.periodo]}</div>
               <div
                 className="mt-auto font-syne font-bold text-sm text-white px-4 py-3 rounded-xl flex items-center justify-center gap-2 transition-opacity hover:opacity-90"
                 style={{ background: s.color }}
@@ -290,7 +308,7 @@ export function ComingSoon() {
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[var(--c-input-bg)] border border-[var(--c-border)]">
               <HiOutlineClock className="w-4 h-4 text-[var(--c-subtle)]" />
               <span className="font-dm text-xs text-[var(--c-subtle)]">
-                Horários exatos em breve
+                🌅 Manhã {HORARIOS.Manhã} · ☀️ Tarde {HORARIOS.Tarde}
               </span>
             </div>
           </div>
