@@ -13,13 +13,9 @@ type Sessao = {
   dias: number[];
   periodo: 'Tarde' | 'Manhã';
   periodoIcon: string;
+  horario: string;
   color: string;
   link: string;
-};
-
-const HORARIOS: Record<'Manhã' | 'Tarde', string> = {
-  Manhã: '8h40 às 12h30',
-  Tarde: '13h40 às 17h30',
 };
 
 const sessoes: Sessao[] = [
@@ -32,6 +28,7 @@ const sessoes: Sessao[] = [
     dias: [16, 17, 18, 19],
     periodo: 'Tarde',
     periodoIcon: '☀️',
+    horario: '14h40 às 17h30',
     color: '#114BF2',
     link: 'https://forms.gle/f69ML5n6YM53G2UAA',
   },
@@ -44,6 +41,7 @@ const sessoes: Sessao[] = [
     dias: [19],
     periodo: 'Manhã',
     periodoIcon: '🌅',
+    horario: '8h40 às 12h30',
     color: '#4D1BBB',
     link: 'https://forms.gle/YSCudAYeDVrDdaP38',
   },
@@ -56,6 +54,7 @@ const sessoes: Sessao[] = [
     dias: [23, 24, 25, 26, 27],
     periodo: 'Manhã',
     periodoIcon: '🌅',
+    horario: '9h40 às 12h30',
     color: '#83B80D',
     link: 'https://forms.gle/Vfofzr1nASUfaf898',
   },
@@ -68,6 +67,7 @@ const sessoes: Sessao[] = [
     dias: [27],
     periodo: 'Tarde',
     periodoIcon: '☀️',
+    horario: '13h40 às 17h30',
     color: '#4D1BBB',
     link: 'https://forms.gle/r7M1Luoj8wbTe1Ei6',
   },
@@ -91,7 +91,7 @@ function construirDiaInfo(lista: Sessao[]): Record<number, DiaInfo> {
     for (const d of s.dias) {
       if (!mapa[d]) mapa[d] = { bg: `${s.color}20`, color: s.color, emojis: [], tooltip: '' };
       mapa[d].emojis.push(s.periodoIcon);
-      const linha = `${s.periodoIcon} ${s.titulo} — ${s.periodo} (${HORARIOS[s.periodo]})`;
+      const linha = `${s.periodoIcon} ${s.titulo} — ${s.periodo} (${s.horario})`;
       mapa[d].tooltip = mapa[d].tooltip ? `${mapa[d].tooltip}\n${linha}` : linha;
     }
   }
@@ -283,7 +283,7 @@ export function ComingSoon() {
               <div className="font-dm text-sm text-[var(--c-muted)] mb-1 flex items-center justify-center gap-1.5">
                 <span>{s.periodoIcon}</span> {s.periodo}
               </div>
-              <div className="font-dm text-xs text-[var(--c-subtle)] mb-5">{HORARIOS[s.periodo]}</div>
+              <div className="font-dm text-xs text-[var(--c-subtle)] mb-5">{s.horario}</div>
               <div
                 className="mt-auto font-syne font-bold text-sm text-white px-4 py-3 rounded-xl flex items-center justify-center gap-2 transition-opacity hover:opacity-90"
                 style={{ background: s.color }}
@@ -308,7 +308,7 @@ export function ComingSoon() {
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[var(--c-input-bg)] border border-[var(--c-border)]">
               <HiOutlineClock className="w-4 h-4 text-[var(--c-subtle)]" />
               <span className="font-dm text-xs text-[var(--c-subtle)]">
-                🌅 Manhã {HORARIOS.Manhã} · ☀️ Tarde {HORARIOS.Tarde}
+                ⏰ Confira o horário de cada turma abaixo
               </span>
             </div>
           </div>
@@ -381,12 +381,12 @@ export function ComingSoon() {
 
           <div className="flex flex-wrap gap-x-5 gap-y-2 justify-center font-dm text-xs sm:text-sm text-[var(--c-muted)] mb-3">
             <span className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-full" style={{ background: '#114BF2' }} /> ☀️ Curso — tarde
+              <span className="w-3 h-3 rounded-full" style={{ background: '#114BF2' }} /> ☀️ Curso — tarde (14h40–17h30)
             </span>
             <span className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-full" style={{ background: '#83B80D' }} /> 🌅 Curso — manhã
+              <span className="w-3 h-3 rounded-full" style={{ background: '#83B80D' }} /> 🌅 Curso — manhã (9h40–12h30)
             </span>
-            <span className="flex items-center gap-1.5">⚡ Oficina (mesmo conteúdo, só 1 dia)</span>
+            <span className="flex items-center gap-1.5">⚡ Oficina (mesmo conteúdo, só 1 dia): manhã 8h40–12h30 ou tarde 13h40–17h30</span>
             <span className="flex items-center gap-1.5">🎉 Feriado (sem aula)</span>
           </div>
           <p className="font-dm text-xs text-[var(--c-subtle)] text-center">
