@@ -5,7 +5,6 @@ import {
   HiOutlineUserGroup,
   HiOutlineArrowTopRightOnSquare,
   HiOutlineClock,
-  HiOutlineDocumentText,
   HiOutlineLockClosed,
 } from 'react-icons/hi2';
 import { HiSparkles } from 'react-icons/hi';
@@ -22,6 +21,7 @@ type Sessao = {
   periodoIcon: string;
   horario: string;
   color: string;
+  link?: string;
 };
 
 const COR_CURSO = '#114BF2';
@@ -39,6 +39,7 @@ const oficinas: Sessao[] = [
     periodoIcon: '🌅',
     horario: '9h às 12h30',
     color: COR_OFICINA,
+    link: 'https://forms.gle/ce52zbV7bkf8rQJG9',
   },
   {
     id: 'oficina-17-tarde',
@@ -51,6 +52,7 @@ const oficinas: Sessao[] = [
     periodoIcon: '☀️',
     horario: '15h10 às 18h40',
     color: COR_OFICINA,
+    link: 'https://forms.gle/mdUVFQfA4pHEXAwG8',
   },
   {
     id: 'oficina-19-manha',
@@ -63,6 +65,7 @@ const oficinas: Sessao[] = [
     periodoIcon: '🌅',
     horario: '9h às 12h30',
     color: COR_OFICINA,
+    link: 'https://forms.gle/2szwvuw3tdBsJJLe9',
   },
   {
     id: 'oficina-19-tarde',
@@ -75,6 +78,7 @@ const oficinas: Sessao[] = [
     periodoIcon: '☀️',
     horario: '15h10 às 18h40',
     color: COR_OFICINA,
+    link: 'https://forms.gle/nJZdLuv6eZeVrCQRA',
   },
 ];
 
@@ -214,7 +218,7 @@ export function ComingSoon() {
             <motion.div animate={{ rotate: 360 }} transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}>
               <HiSparkles className="w-4 h-4" />
             </motion.div>
-            <span className="font-syne font-bold text-sm tracking-wide uppercase">em breve</span>
+            <span className="font-syne font-bold text-sm tracking-wide uppercase">oficinas abertas</span>
           </div>
         </motion.div>
 
@@ -225,8 +229,8 @@ export function ComingSoon() {
           transition={{ duration: 0.7, delay: 0.1 }}
           className="font-syne font-extrabold text-4xl md:text-5xl lg:text-6xl text-[var(--c-text)] text-center mb-6 leading-tight"
         >
-          Nossas turmas de novembro{' '}
-          <span className="text-[var(--c-accent-blue)]">já têm data!</span>
+          As oficinas de novembro{' '}
+          <span className="text-[var(--c-accent-blue)]">estão com inscrição aberta!</span>
         </motion.h2>
 
         <motion.p
@@ -235,10 +239,9 @@ export function ComingSoon() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="font-dm text-lg md:text-xl text-[var(--c-muted)] text-center max-w-2xl mx-auto mb-14 leading-relaxed"
         >
-          As oficinas de letramento digital são nos dias 17 e 19, de manhã e à
-          tarde — o formulário de inscrição sai em breve. Os cursos são na semana
-          de 23 a 27, também nos dois períodos, com inscrições abrindo durante as
-          oficinas ou a partir do dia 20.
+          São nos dias 17 e 19, de manhã e à tarde — escolha abaixo e garanta sua
+          vaga. Os cursos são na semana de 23 a 27, também nos dois períodos, com
+          inscrições abrindo durante as oficinas ou a partir do dia 20.
         </motion.p>
 
         {/* Curso x Oficina */}
@@ -280,7 +283,7 @@ export function ComingSoon() {
           ⚡ Oficinas — dias 17 e 19
         </h3>
         <p className="font-dm text-sm text-[var(--c-subtle)] text-center mb-5">
-          📝 Formulário de inscrição sai em breve, aqui no site.
+          👇 Escolha o dia e o período
         </p>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -289,10 +292,15 @@ export function ComingSoon() {
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-14"
         >
           {oficinas.map((s, i) => (
-            <motion.div
+            <motion.a
               key={s.id}
+              href={s.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Inscreva-se: ${s.titulo}, dia ${s.dataLabel} de novembro, período da ${s.periodo.toLowerCase()}`}
               initial={{ opacity: 0, y: 20 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
+              whileHover={{ y: -4 }}
               transition={{ duration: 0.5, delay: 0.35 + i * 0.08 }}
               className="glass-card rounded-2xl p-6 text-center flex flex-col"
               style={{ borderColor: `${s.color}30` }}
@@ -318,12 +326,12 @@ export function ComingSoon() {
               </div>
               <div className="font-dm text-xs text-[var(--c-subtle)] mb-5">{s.horario}</div>
               <div
-                className="mt-auto font-syne font-bold text-sm px-4 py-3 rounded-xl flex items-center justify-center gap-2 border-2 border-dashed"
-                style={{ borderColor: `${s.color}50`, color: s.color }}
+                className="mt-auto font-syne font-bold text-sm text-white px-4 py-3 rounded-xl flex items-center justify-center gap-2 transition-opacity hover:opacity-90"
+                style={{ background: s.color }}
               >
-                <HiOutlineDocumentText className="w-4 h-4" /> Formulário em breve
+                Inscreva-se <HiOutlineArrowTopRightOnSquare className="w-4 h-4" />
               </div>
-            </motion.div>
+            </motion.a>
           ))}
         </motion.div>
 
@@ -486,7 +494,7 @@ export function ComingSoon() {
           🎯 Prioridade garantida
         </h3>
         <p className="font-dm text-base text-[var(--c-muted)] text-center max-w-2xl mx-auto mb-8">
-          Quando as inscrições abrirem, serão pra toda a comunidade. Esses grupos têm vaga garantida nas turmas:
+          As vagas são abertas a toda a comunidade. Esses grupos têm prioridade garantida nas turmas:
         </p>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
