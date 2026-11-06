@@ -28,7 +28,7 @@ const sessoes: Sessao[] = [
     dias: [16, 17, 18, 19],
     periodo: 'Tarde',
     periodoIcon: '☀️',
-    horario: '14h40 às 17h30',
+    horario: '15h10 às 18h',
     color: '#114BF2',
     link: 'https://forms.gle/f69ML5n6YM53G2UAA',
   },
@@ -381,7 +381,7 @@ export function ComingSoon() {
 
           <div className="flex flex-wrap gap-x-5 gap-y-2 justify-center font-dm text-xs sm:text-sm text-[var(--c-muted)] mb-3">
             <span className="flex items-center gap-1.5">
-              <span className="w-3 h-3 rounded-full" style={{ background: '#114BF2' }} /> ☀️ Curso — tarde (14h40–17h30)
+              <span className="w-3 h-3 rounded-full" style={{ background: '#114BF2' }} /> ☀️ Curso — tarde (15h10–18h)
             </span>
             <span className="flex items-center gap-1.5">
               <span className="w-3 h-3 rounded-full" style={{ background: '#83B80D' }} /> 🌅 Curso — manhã (9h40–12h30)
