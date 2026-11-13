@@ -88,17 +88,18 @@ export function Sponsors() {
             </span>
             <div
               className="w-full rounded-3xl p-8 min-h-[180px] flex items-center justify-center"
-              style={{ background: '#003087', border: '1px solid rgba(255,255,255,0.1)' }}
+              style={{ background: '#0033FF', border: '1px solid rgba(255,255,255,0.1)' }}
             >
               <a
                 href="https://www.caixa.gov.br/sustentabilidade/fundo-socioambiental-caixa/"
                 target="_blank"
                 rel="noopener noreferrer"
+                className="w-full"
               >
                 <img
-                  src="/fsc_negativa_chapada.png"
+                  src="/fsa_RGB_negativo_cor.png"
                   alt="Caixa Econômica Federal"
-                  className="h-12 md:h-14 w-auto object-contain"
+                  className="w-full h-auto object-contain"
                 />
               </a>
             </div>

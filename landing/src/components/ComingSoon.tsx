@@ -144,6 +144,11 @@ const FERIADOS: Record<number, string> = {
   20: 'Consciência Negra',
 };
 
+// Pausa temporária (problema elétrico na sala) — reverter pra false quando as
+// inscrições de oficinas e cursos voltarem. Conteúdo abaixo fica só oculto,
+// não removido.
+const PAUSA_TEMPORARIA = true;
+
 const priorities = [
   {
     icon: HiOutlineUserGroup,
@@ -207,6 +212,34 @@ export function ComingSoon() {
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[480px] h-[480px] rounded-full border border-brand-blue/5 pointer-events-none" />
 
       <div ref={ref} className="relative z-10 max-w-5xl mx-auto px-6">
+        {PAUSA_TEMPORARIA && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="flex justify-center mb-8">
+              <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-brand-green text-dark-950">
+                <span>🚧</span>
+                <span className="font-syne font-bold text-sm tracking-wide uppercase">pausa técnica</span>
+              </div>
+            </div>
+
+            <h2 className="font-syne font-extrabold text-4xl md:text-5xl lg:text-6xl text-[var(--c-text)] text-center mb-6 leading-tight">
+              Voltamos <span className="text-[var(--c-accent-blue)]">já, já!</span>
+            </h2>
+
+            <p className="font-dm text-lg md:text-xl text-[var(--c-muted)] text-center max-w-2xl mx-auto mb-14 leading-relaxed">
+              Identificamos um problema na parte elétrica da sala e vamos fazer uma
+              pequena obra pra garantir que os computadores funcionem direitinho.
+              Por isso, pausamos as inscrições por um tempinho — mas as vagas das
+              oficinas e dos cursos continuam garantidas. Fique de olho, voltamos logo!
+            </p>
+          </motion.div>
+        )}
+
+        {!PAUSA_TEMPORARIA && (
+        <>
         {/* Coming soon badge */}
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
@@ -488,6 +521,8 @@ export function ComingSoon() {
             Feriados de novembro: dia 2 (Finados), 15 (Proclamação da República) e 20 (Consciência Negra).
           </p>
         </motion.div>
+        </>
+        )}
 
         {/* Priority cards */}
         <h3 className="font-syne font-bold text-xl md:text-2xl text-[var(--c-text)] text-center mb-3">
