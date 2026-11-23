@@ -4,7 +4,7 @@ import { HiOutlineEnvelope } from 'react-icons/hi2';
 import { Logo } from './Logo';
 
 const sectionLinks = [
-  { label: 'Cursos', hash: '#cursos' },
+  { label: 'Cursos', hash: '#inscricoes' },
   { label: 'Inscrições', hash: '#inscricoes' },
   { label: 'Realização', hash: '#realizacao' },
 ];

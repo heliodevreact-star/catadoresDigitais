@@ -7,7 +7,7 @@ import { Logo } from './Logo';
 import { useTheme } from '../context/ThemeContext';
 
 const sectionLinks = [
-  { label: 'Cursos', hash: '#cursos' },
+  { label: 'Cursos', hash: '#inscricoes' },
   { label: 'Público', hash: '#inscricoes' },
   { label: 'Realização', hash: '#realizacao' },
 ];

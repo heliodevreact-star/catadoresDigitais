@@ -156,7 +156,7 @@ export function Hero() {
             <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
           </a>
           <a
-            href="#cursos"
+            href="#inscricoes"
             className="font-dm font-medium text-[var(--c-muted)] border border-[var(--c-border-md)] hover:border-brand-blue/40 hover:text-brand-blue px-8 py-4 rounded-2xl text-base transition-colors duration-200 w-full sm:w-auto text-center"
           >
             Conhecer os cursos
