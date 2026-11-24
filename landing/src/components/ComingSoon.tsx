@@ -24,7 +24,7 @@ type Turma = {
 };
 
 // Turmas 1 e 2: remarcadas por causa do problema elétrico — quem já se
-// inscreveu está matriculado, só restam 5 vagas em cada pra gente nova.
+// inscreveu está matriculado. As duas lotaram.
 const turmasReabertas: Turma[] = [
   {
     id: 'turma-1',
@@ -33,8 +33,7 @@ const turmasReabertas: Turma[] = [
     periodoIcon: '🌅',
     horario: '9h às 12h30',
     accent: '#FF6B35',
-    vagas: 5,
-    link: 'https://forms.gle/DHAFkRXRKsAsoooL6',
+    fechada: true,
   },
   {
     id: 'turma-2',
@@ -340,10 +339,10 @@ export function ComingSoon() {
           </p>
           <p className="font-dm text-sm text-[var(--c-muted)] leading-relaxed">
             Essas turmas foram remarcadas por causa do problema elétrico — quem
-            já tinha se inscrito não precisa se inscrever de novo. A Turma 2
-            (tarde) já está cheia; restam só{' '}
-            <strong className="text-[var(--c-text)]">5 vagas na Turma 1</strong>{' '}
-            (manhã) pra quem ainda não garantiu a sua.
+            já tinha se inscrito não precisa se inscrever de novo. As duas{' '}
+            <strong className="text-[var(--c-text)]">já estão cheias</strong>{' '}
+            — quem ainda não garantiu vaga pode se inscrever na Turma 3 ou 4,
+            no dia 1 de dezembro, abaixo.
           </p>
         </motion.div>
 
