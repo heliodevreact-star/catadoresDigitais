@@ -6,6 +6,7 @@ import {
   HiOutlineArrowTopRightOnSquare,
   HiOutlineLockClosed,
   HiOutlineDocumentText,
+  HiOutlineXCircle,
 } from 'react-icons/hi2';
 import { HiSparkles } from 'react-icons/hi';
 import { useTheme } from '../context/ThemeContext';
@@ -19,6 +20,7 @@ type Turma = {
   accent: string;
   vagas?: number;
   link?: string;
+  fechada?: boolean;
 };
 
 // Turmas 1 e 2: remarcadas por causa do problema elétrico — quem já se
@@ -41,8 +43,7 @@ const turmasReabertas: Turma[] = [
     periodoIcon: '☀️',
     horario: '15h10 às 18h40',
     accent: '#E8590C',
-    vagas: 5,
-    link: 'https://forms.gle/WzPr56KQhp6ymcnr7',
+    fechada: true,
   },
 ];
 
@@ -153,7 +154,7 @@ export function ComingSoon() {
   const { isDark } = useTheme();
 
   function renderTurma(t: Turma, i: number, delayBase: number, dataContexto: string) {
-    const temLink = Boolean(t.link);
+    const temLink = Boolean(t.link) && !t.fechada;
     const Wrapper = (temLink ? motion.a : motion.div) as typeof motion.a;
     return (
       <Wrapper
@@ -172,7 +173,7 @@ export function ComingSoon() {
         whileHover={temLink ? { y: -6, scale: 1.03, transition: { duration: 0.12, ease: 'easeOut' } } : undefined}
         whileTap={temLink ? { scale: 0.97, transition: { duration: 0.08 } } : undefined}
         className="glass-card rounded-2xl p-6 text-center flex flex-col"
-        style={{ borderColor: `${t.accent}40` }}
+        style={{ borderColor: `${t.accent}40`, opacity: t.fechada ? 0.6 : 1 }}
       >
         <div
           className="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-4 text-xl"
@@ -197,7 +198,11 @@ export function ComingSoon() {
           </div>
         )}
 
-        {temLink ? (
+        {t.fechada ? (
+          <div className="mt-auto font-syne font-bold text-sm px-4 py-3 rounded-xl flex items-center justify-center gap-2 border-2 border-dashed border-[var(--c-border)] text-[var(--c-subtle)]">
+            <HiOutlineXCircle className="w-4 h-4" /> Turma cheia
+          </div>
+        ) : temLink ? (
           <div
             className="mt-auto font-syne font-bold text-sm text-white px-4 py-3 rounded-xl flex items-center justify-center gap-2 transition-opacity hover:opacity-90"
             style={{ background: t.accent }}
@@ -335,9 +340,10 @@ export function ComingSoon() {
           </p>
           <p className="font-dm text-sm text-[var(--c-muted)] leading-relaxed">
             Essas turmas foram remarcadas por causa do problema elétrico — quem
-            já tinha se inscrito não precisa se inscrever de novo. Restam só{' '}
-            <strong className="text-[var(--c-text)]">5 vagas em cada</strong>{' '}
-            pra quem ainda não garantiu a sua.
+            já tinha se inscrito não precisa se inscrever de novo. A Turma 2
+            (tarde) já está cheia; restam só{' '}
+            <strong className="text-[var(--c-text)]">5 vagas na Turma 1</strong>{' '}
+            (manhã) pra quem ainda não garantiu a sua.
           </p>
         </motion.div>
 
