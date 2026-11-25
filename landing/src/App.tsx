@@ -8,6 +8,7 @@ import { Vagas } from './pages/Vagas';
 import { Design } from './pages/Design';
 import { OficinaLetramento } from './pages/OficinaLetramento';
 import { OficinaLetramentoJogo } from './pages/OficinaLetramentoJogo';
+import { OficinaLetramentoEducador } from './pages/OficinaLetramentoEducador';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/design" element={<Design />} />
           <Route path="/oficinaletramento" element={<OficinaLetramento />} />
           <Route path="/oficinaletramento/jogo" element={<OficinaLetramentoJogo />} />
+          <Route path="/oficinaletramento/educador" element={<OficinaLetramentoEducador />} />
         </Routes>
         <Footer />
       </div>
