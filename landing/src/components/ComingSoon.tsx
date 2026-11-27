@@ -23,29 +23,6 @@ type Turma = {
   fechada?: boolean;
 };
 
-// Turmas 1 e 2: remarcadas por causa do problema elétrico — quem já se
-// inscreveu está matriculado. As duas lotaram.
-const turmasReabertas: Turma[] = [
-  {
-    id: 'turma-1',
-    titulo: 'Turma 1',
-    periodo: 'Manhã',
-    periodoIcon: '🌅',
-    horario: '9h às 12h30',
-    accent: '#FF6B35',
-    fechada: true,
-  },
-  {
-    id: 'turma-2',
-    titulo: 'Turma 2',
-    periodo: 'Tarde',
-    periodoIcon: '☀️',
-    horario: '15h10 às 18h40',
-    accent: '#E8590C',
-    fechada: true,
-  },
-];
-
 // Turmas 3 e 4: turmas novas, sem restrição de vagas divulgada.
 const turmasNovas: Turma[] = [
   {
@@ -297,9 +274,8 @@ export function ComingSoon() {
           transition={{ duration: 0.3, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
           className="font-dm text-lg md:text-xl text-[var(--c-muted)] text-center max-w-2xl mx-auto mb-10 leading-relaxed"
         >
-          São 4 turmas, de manhã e à tarde: Turma 1 e Turma 2 no dia 26 de
-          novembro, Turma 3 e Turma 4 no dia 1 de dezembro. Escolha a sua e
-          inscreva-se abaixo!
+          A próxima data é 1 de dezembro, com duas turmas: Turma 3 de manhã e
+          Turma 4 à tarde. Escolha a sua e inscreva-se abaixo!
         </motion.p>
 
         <motion.div
@@ -318,37 +294,6 @@ export function ComingSoon() {
             <HiOutlineArrowTopRightOnSquare className="w-3.5 h-3.5" />
           </a>
         </motion.div>
-
-        {/* Turmas 1 e 2 — reabertas após o problema elétrico */}
-        <h3 className="font-syne font-bold text-xl md:text-2xl text-[var(--c-text)] text-center mb-1">
-          📅 26 de novembro <span className="text-[var(--c-subtle)] font-normal text-base">(quinta-feira)</span>
-        </h3>
-        <p className="font-dm text-sm text-[var(--c-subtle)] text-center mb-5">
-          Turma 1 (manhã) e Turma 2 (tarde)
-        </p>
-
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.25, delay: 0.16, ease: [0.16, 1, 0.3, 1] }}
-          className="max-w-2xl mx-auto mb-6 rounded-2xl p-5 text-center"
-          style={{ background: 'rgba(255,107,53,0.1)', border: '1px solid rgba(255,107,53,0.3)' }}
-        >
-          <p className="font-syne font-bold text-base text-[var(--c-text)] mb-1">
-            ✅ Já se inscreveu antes? Sua vaga está garantida!
-          </p>
-          <p className="font-dm text-sm text-[var(--c-muted)] leading-relaxed">
-            Essas turmas foram remarcadas por causa do problema elétrico — quem
-            já tinha se inscrito não precisa se inscrever de novo. As duas{' '}
-            <strong className="text-[var(--c-text)]">já estão cheias</strong>{' '}
-            — quem ainda não garantiu vaga pode se inscrever na Turma 3 ou 4,
-            no dia 1 de dezembro, abaixo.
-          </p>
-        </motion.div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-2xl mx-auto mb-14">
-          {turmasReabertas.map((t, i) => renderTurma(t, i, 0.2, 'dia 26 de novembro'))}
-        </div>
 
         {/* Turmas 3 e 4 */}
         <h3 className="font-syne font-bold text-xl md:text-2xl text-[var(--c-text)] text-center mb-1">
